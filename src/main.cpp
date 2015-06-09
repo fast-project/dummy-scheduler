@@ -15,7 +15,9 @@
 #include <string>
 #include <exception>
 #include <iostream>
+#include <unistd.h>
 #include  "pluginConfiguration.h"
+#include "message.h"
 
 int main(int argc, char *argv[]) {
     try {
@@ -34,8 +36,33 @@ int main(int argc, char *argv[]) {
         std::string config_file_name = "scheduler.conf";
         if (vm.count("config"))
             config_file_name = vm["config"].as<std::string>();
-        
+
         pluginConfiguration conf(config_file_name);
+
+        while (1) {
+            std::vector<fast::machineConf> confs = {
+                {
+                    {"name", "anthe1"},
+                    {"vcpus", "1"},
+                    {"memory", "1048576"}
+                },
+                {
+                    {"name", "centos660"},
+                    {"vcpus", "1"},
+                    {"memory", "524288"}
+                }
+            };
+            //(std::shared_ptr<fast::MQTT_communicator>)
+            fast::startvm("test",confs, conf.comm, 2);
+            
+            sleep(5);
+            
+            fast::stopvm("test",{"anthe1","centos660"},conf.comm,2);
+            sleep(5);
+            
+            fast::migratevm("test","anthe1","node45",{{"live-migration","false"}}, conf.comm,2);
+            sleep(5);
+        }
     } catch (const std::exception &e) {
         std::cout << "Exception: " << e.what() << std::endl;
     }

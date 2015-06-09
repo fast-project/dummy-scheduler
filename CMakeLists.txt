@@ -70,6 +70,7 @@ endif()
 ### Define source files.
 set(SRC ${PROJECT_SOURCE_DIR}/src/main.cpp
         ${PROJECT_SOURCE_DIR}/src/pluginConfiguration.cpp
+        ${PROJECT_SOURCE_DIR}/src/message.cpp
 )
 
 # fast-lib

@@ -9,7 +9,9 @@
 #define	PLUGINCONFIGURATION_H
 
 #include <fast-lib/communication/communicator.hpp>
+#include <fast-lib/communication/mqtt_communicator.hpp>
 #include <fast-lib/serialization/serializable.hpp>
+
 
 class pluginConfiguration : fast::Serializable {
 public:
@@ -32,7 +34,7 @@ public:
 
 
 
-    std::shared_ptr<fast::Communicator> comm;
+    std::shared_ptr<fast::MQTT_communicator> comm;
 private:
 
 };

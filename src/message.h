@@ -17,13 +17,12 @@
 namespace fast {
 
     enum messageType {
-        STARTVM, STOPVM, MIGRATEVM
+        STARTVM, STOPVM, MIGRATEVM, INITAGENT, STOPMONITOR
     };
     typedef std::string name;
     typedef std::vector<name> machines;
     typedef std::map <name, name > machineConf;
     typedef std::map <name, name > parameter;
-    
 
     class message : public fast::Serializable {
     public:
@@ -58,11 +57,13 @@ namespace fast {
     class startvm : public message {
     public:
 
-        startvm(name topic, std::vector < machineConf > vm_conf, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
-        : message(topic, comm, "scheduler", STARTVM, Qos), vm_configurations(vm_conf) {
+        startvm(name hostname, std::vector < machineConf > vm_conf, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        : message(topic, comm, "scheduler", STARTVM, Qos), vm_configurations(vm_conf), hostname(hostname) {
+            this->topic = std::string("fast/migfra/") + hostname + std::string("/task");
             this->send();
         }
         std::vector < machineConf > vm_configurations;
+        name hostname;
 
         // Override these two methods to state which members should be serialized
         YAML::Node emit() const override;
@@ -72,12 +73,15 @@ namespace fast {
 
     class stopvm : public message {
     public:
+        name hostname;
+        machines vmMachines;
 
-        stopvm(name topic, machines vmMachines, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
-        : message(topic, comm, "scheduler", STARTVM, Qos), vmMachines(vmMachines) {
+        stopvm(name host, machines vmMachines, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        : hostname(host), vmMachines(vmMachines),
+        message(std::string("fast/migfra/") + host + std::string("/task")
+        , comm, "scheduler", STARTVM, Qos) {
             this->send();
         }
-        machines vmMachines;
 
         // Override these two methods to state which members should be serialized
         YAML::Node emit() const override;
@@ -87,10 +91,12 @@ namespace fast {
     class migratevm : public message {
     public:
 
-        migratevm(name topic, name vm_name, name destination, parameter par, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
-        : message(topic, comm, "scheduler", MIGRATEVM, Qos), vm_name(vm_name), destination(destination), par(par) {
+        migratevm(name host, name vm_name, name destination, parameter par, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        : hostname(host), vm_name(vm_name), destination(destination), par(par),
+        message(std::string("fast/migfra/") + host + std::string("/task"), comm, "scheduler", MIGRATEVM, Qos) {
             this->send();
         }
+        name hostname;
         name vm_name;
         name destination;
         parameter par;
@@ -98,6 +104,43 @@ namespace fast {
         YAML::Node emit() const override;
         void load(const YAML::Node &node) override;
     };
+
+    class initAgent : public message {
+    public:
+        name host;
+        parameter categories;
+        name repeat;
+
+        initAgent(name host, parameter categories, name repeat, std::shared_ptr<fast::MQTT_communicator> comm, int Qos) :
+        host(host), categories(categories), repeat(repeat),
+        message( std::string("fast/agent/") + host + std::string("/task"),
+        comm,
+        "scheduler", INITAGENT, Qos) {
+
+        };
+        // Override these two methods to state which members should be serialized
+        YAML::Node emit() const override;
+        void load(const YAML::Node &node) override;
+    };
+
+    class stopMonitor : public message {
+    public:
+        name host;
+        name job_id;
+        name process_id;
+
+        stopMonitor(name host, name job_id, name process_id, std::shared_ptr<fast::MQTT_communicator> comm, int Qos) :
+        host(host), job_id(job_id), process_id(process_id),
+        message(std::string("fast/agent/") + host + std::string("/task"),
+        comm,
+        "scheduler", STOPMONITOR, Qos) {
+        };
+        // Override these two methods to state which members should be serialized
+        YAML::Node emit() const override;
+        void load(const YAML::Node &node) override;
+    };
+
+
 }
 #endif	/* MESSAGE_H */
 

@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include  "pluginConfiguration.h"
 #include "message.h"
+#include "recMessageHandler.h"
 
 int main(int argc, char *argv[]) {
     try {
@@ -53,15 +54,22 @@ int main(int argc, char *argv[]) {
                 }
             };
             //(std::shared_ptr<fast::MQTT_communicator>)
-            fast::startvm("test",confs, conf.comm, 2);
-            
+            fast::startvm("test", confs, conf.comm, 2);
+
             sleep(5);
-            
-            fast::stopvm("test",{"anthe1","centos660"},conf.comm,2);
+
+            fast::stopvm("test",{"anthe1", "centos660"}, conf.comm, 2);
             sleep(5);
-            
-            fast::migratevm("test","anthe1","node45",{{"live-migration","false"}}, conf.comm,2);
+
+            fast::migratevm("test", "anthe1", "node45",{
+                {"live-migration", "false"}}, conf.comm, 2);
             sleep(5);
+            recMessageHandler receive(false, conf.comm);
+            receive.addTopic("fast/migfra/+/status", 2);
+            receive.addTopic("fast/agent/+/status", 2);
+            std::cout << "before receive" << std::endl;
+            receive.run();
+            std::cout << "after receive" << std::endl;
         }
     } catch (const std::exception &e) {
         std::cout << "Exception: " << e.what() << std::endl;

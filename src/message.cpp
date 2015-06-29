@@ -16,6 +16,7 @@ void message::send() {
 
 YAML::Node startvm::emit() const {
     YAML::Node node, node1;
+    node["host"] = hostname;
     node["task"] = "start vm";
     for (auto &item : this->vm_configurations) {
         YAML::Node node2;
@@ -29,28 +30,31 @@ YAML::Node startvm::emit() const {
 }
 
 void startvm::load(const YAML::Node &node) {
-    throw std::runtime_error("startvm::load "+ node.as<std::string>()+ "  not supported\n");
+    throw std::runtime_error("startvm::load "+ node.as<name>()+ "  not supported\n");
 }
 
 YAML::Node fast::stopvm::emit() const {
     YAML::Node node, node1;
+    node["host"] = hostname;
     node["task"] = "stop vm";
     for (auto &item : this->vmMachines) {
         YAML::Node node2;
         node2["vm-name"] = item;
         node1.push_back(node2);
     }
-    node["vm-configurations"] = node1;
+    node["list"] = node1;
+    //node["vm-configurations"] = node1;
     return node;
 }
 
 void stopvm::load(const YAML::Node &node) {
-    throw std::runtime_error("stopvm::load "+ node.as<std::string>()+ " not supported\n");
+    throw std::runtime_error("stopvm::load "+ node.as<name>()+ " not supported\n");
 }
 
 
 YAML::Node fast::migratevm::emit() const {
     YAML::Node node, node1;
+    node["host"] = hostname;
     node["task"] = "migrate vm";
     node["vm-name"] = this->vm_name;
     node["destination"] = this->destination;
@@ -63,7 +67,35 @@ YAML::Node fast::migratevm::emit() const {
 }
 
 void migratevm::load(const YAML::Node &node){
-    throw std::runtime_error("migratevm::load "+ node.as<std::string>()+ " not supported\n");
+    throw std::runtime_error("migratevm::load "+ node.as<name>()+ " not supported\n");
 }
+
+YAML::Node fast::initAgent::emit() const {
+    YAML::Node node,  categ;
+    node["task"] = "init agent";
+    for(auto &item :categories)
+    {
+        categ[item.first]= item.second;
+    }
+    node["KPI"]["categories"] = categ;
+    node["KPI"]["repeat"] = repeat;
+    return node;
+}
+void fast::initAgent::load(const YAML::Node &node) {
+    throw std::runtime_error("initAgent::load "+ node.as<name>()+ " not supported\n");
+}
+
+YAML::Node fast::stopMonitor::emit() const {
+    YAML::Node node;
+    node["task"] = "stop monitor";
+    node["job-description"]["job-id"] = job_id;
+    node["job-description"]["process-id"] = process_id;
+    return node;
+}
+
+void fast::stopMonitor::load(const YAML::Node& node) {
+    throw std::runtime_error("stopMonitor::load "+ node.as<name>()+ " not supported\n");
+}
+
 
 

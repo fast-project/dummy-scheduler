@@ -1,0 +1,7 @@
+## YAML Template.
+---
+result: vm migrated
+vm-name: bebo3
+status: success
+process-id: 789
+...

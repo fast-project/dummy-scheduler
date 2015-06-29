@@ -1,0 +1,15 @@
+## YAML Template.
+---
+scheduler: global
+result: vm started
+list:
+    - vm-name: bebo1
+      status: success
+      process-id: 4526
+    - vm-name: bebo2
+      status: error
+      process-id: 4215
+...
+
+
+

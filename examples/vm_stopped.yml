@@ -1,0 +1,9 @@
+## YAML Template.
+---
+result: vm stopped
+list:
+    - vm-name: bebo1
+      status: success
+    - vm-name: bebo2
+      status: error
+...

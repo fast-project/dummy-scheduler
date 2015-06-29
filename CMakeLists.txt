@@ -23,7 +23,7 @@ else()
 	message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pthread -Wreorder")
 
 ### Find libraries
 # Find yaml-cpp
@@ -71,6 +71,9 @@ endif()
 set(SRC ${PROJECT_SOURCE_DIR}/src/main.cpp
         ${PROJECT_SOURCE_DIR}/src/pluginConfiguration.cpp
         ${PROJECT_SOURCE_DIR}/src/message.cpp
+        ${PROJECT_SOURCE_DIR}/src/task.cpp
+        ${PROJECT_SOURCE_DIR}/src/recTaskParser.cpp
+        ${PROJECT_SOURCE_DIR}/src/recMessageHandler.cpp
 )
 
 # fast-lib

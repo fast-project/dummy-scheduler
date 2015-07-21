@@ -7,7 +7,7 @@
 
 #ifndef RECMESSAGEHANDLER_H
 #define	RECMESSAGEHANDLER_H
-#include "fast-lib/communication/mqtt_communicator.hpp"
+#include <fast-lib/communication/mqtt_communicator.hpp>
 #include "recTaskParser.h"
 
 class recMessageHandler {

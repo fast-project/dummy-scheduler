@@ -26,9 +26,6 @@ void recMessageHandler::run() {
             std::string s = comm->get_message(item);
             std::cout << "after get message" << std::endl;
             taskParser.from_string(s);
-
-
-
             taskParser.execute();
         }
     } while (loop);

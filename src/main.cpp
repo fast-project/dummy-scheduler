@@ -65,8 +65,8 @@ int main(int argc, char *argv[]) {
                 {"live-migration", "false"}}, conf.comm, 2);
             sleep(5);
             recMessageHandler receive(false, conf.comm);
-            receive.addTopic("fast/migfra/+/status", 2);
-            receive.addTopic("fast/agent/+/status", 2);
+            receive.addTopic("fast/migfra/bebo/status", 2);
+            receive.addTopic("fast/agent/bebo/status", 2);
             std::cout << "before receive" << std::endl;
             receive.run();
             std::cout << "after receive" << std::endl;

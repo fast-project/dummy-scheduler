@@ -59,6 +59,7 @@ namespace fast {
 
         startvm(name hostname, std::vector < machineConf > vm_conf, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
         : message(topic, comm, "scheduler", STARTVM, Qos), vm_configurations(vm_conf), hostname(hostname) {
+            std::cout << "startvm";
             this->topic = std::string("fast/migfra/") + hostname + std::string("/task");
             this->send();
         }

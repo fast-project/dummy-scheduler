@@ -19,16 +19,22 @@ recTaskParser::~recTaskParser() {
 void recTaskParser::load(const YAML::Node& node) {
     //fast::load
     if (node["result"]) {
-        if (node["restart"].as<std::string>() == std::string("vm started")) {
+
+
+        if (node["result"].as<std::string>() == std::string("vm started")) {
+
             std::unique_ptr<task> p(new vmStarted);
             p->load(node);
             tasks.push_back(std::move(p));
 
-        } else if (node["restart"].as<std::string>() == std::string("vm stopped")) {
+        } else if (node["result"].as<std::string>() == std::string("vm stopped")) {
+
             std::unique_ptr<task> p(new vmStoped());
             p->load(node);
             tasks.push_back(std::move(p));
-        } else if (node["restart"].as<std::string>() == std::string("vm migrated")) {
+        } else
+            if (node["result"].as<std::string>() == std::string("vm migrated")) {
+
             std::unique_ptr<task> p(new vmMigrated());
             p->load(node);
             tasks.push_back(std::move(p));
@@ -41,7 +47,8 @@ void recTaskParser::load(const YAML::Node& node) {
         }
 
     } else {
-        throw std::runtime_error("receiving Unsupported message\n");
+        //throw std::runtime_error("receiving Unsupported message\n");
+        std::cout << "receiving Unsupported message\n";
     }
 }
 
@@ -50,6 +57,7 @@ void recTaskParser::execute() {
         item->execute();
     }
 }
+
 YAML::Node recTaskParser::emit() const {
-    
+
 }

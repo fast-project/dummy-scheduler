@@ -10,7 +10,7 @@
 communicator:
   type: mqtt
   id: test-id
-  subscribe-topic: fast/migfra/+/status
+  subscribe-topic: fast/migfra/bebo/status
   publish-topic: topic1
   host: localhost
   port: 1883

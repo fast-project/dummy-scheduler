@@ -5,14 +5,19 @@
 #
 # Created on Jun 29, 2015, 12:39:40 PM
 #
+
 while true
 do
-    cat vm_migrate.yml | mosquitto_pub -l -t "fast/migfra/bebo/status"
-    sleep 5
-    cat vm_started.yml | mosquitto_pub -l -t "fast/migfra/bebo/status"
-    sleep 5
-    cat vm_stopped.yml | mosquitto_pub -l -t "fast/migfra/bebo/status"
-    sleep 5
-    cat init_agent.yml | mosquitto_pub -l -t "fast/agent/bebo/status"
-    sleep 5
+    
+    #echo $vm_migrate
+    mosquitto_pub -t "fast/migfra/bebo/status" -f vm_migrate.yml 
+    sleep 1
+    mosquitto_pub -t "fast/migfra/bebo/status" -f vm_started.yml
+    sleep 1
+    mosquitto_pub -t "fast/migfra/bebo/status" -f vm_stopped.yml 
+    sleep 1
+    #cat vm_stopped.yml | mosquitto_pub -l -t "fast/migfra/bebo/status"
+    #sleep 20
+    mosquitto_pub  -t "fast/agent/bebo/status" -f init_agent.yml
+    #sleep 20
 done

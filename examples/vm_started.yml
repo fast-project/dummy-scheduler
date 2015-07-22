@@ -1,4 +1,3 @@
-## YAML Template.
 ---
 scheduler: global
 result: vm started

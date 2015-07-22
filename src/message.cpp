@@ -17,8 +17,8 @@ void message::send() {
 
 YAML::Node startvm::emit() const {
     YAML::Node node, node1;
-    node["host"] = hostname;
     node["task"] = "start vm";
+    node["host"] = hostname;
     for (auto &item : this->vm_configurations) {
         YAML::Node node2;
         for (auto &mp : item) {
@@ -36,8 +36,9 @@ void startvm::load(const YAML::Node &node) {
 
 YAML::Node fast::stopvm::emit() const {
     YAML::Node node, node1;
-    node["host"] = hostname;
     node["task"] = "stop vm";
+    node["host"] = hostname;
+    
     for (auto &item : this->vmMachines) {
         YAML::Node node2;
         node2["vm-name"] = item;
@@ -55,8 +56,9 @@ void stopvm::load(const YAML::Node &node) {
 
 YAML::Node fast::migratevm::emit() const {
     YAML::Node node, node1;
-    node["host"] = hostname;
     node["task"] = "migrate vm";
+    node["host"] = hostname;
+    
     node["vm-name"] = this->vm_name;
     node["destination"] = this->destination;
     for(auto &item : this->par)

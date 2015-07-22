@@ -69,7 +69,7 @@ YAML::Node vmStoped::emit() const
 
 void vmMigrated::execute(){
    std::cout << "vm migrated received"<<std::endl;
-   std::cout << "\t\t" <<this->vmName << "  " << this->status << this->processID << std::endl;
+   std::cout << "\t\t" <<this->vmName << "  " << this->status << "  " <<this->processID << std::endl;
 }
 YAML::Node vmMigrated::emit() const
 {
@@ -88,6 +88,7 @@ void vmMigrated::load(const YAML::Node& node)
 
 
 void initAgent::execute(){
+    std::cout << "Agent init received" <<" " << "hostname: " << this->hostname << std::endl;
     
 }
 YAML::Node initAgent::emit() const

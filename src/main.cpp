@@ -39,38 +39,51 @@ int main(int argc, char *argv[]) {
             config_file_name = vm["config"].as<std::string>();
 
         pluginConfiguration conf(config_file_name);
+        recMessageHandler receive(true, conf.comm);
+        receive.addTopic("fast/migfra/bebo/status", 2);
+        receive.addTopic("fast/agent/bebo/status", 2);
+        //while (1) {
+        std::vector<fast::machineConf> confs = {
+            {
+                {"name", "anthe1"},
+                {"vcpus", "1"},
+                {"memory", "1048576"}
+            },
+            {
+                {"name", "centos660"},
+                {"vcpus", "1"},
+                {"memory", "524288"}
+            }
+        };
+        //fast::stopvm("test",{"anthe1", "centos660"}, conf.comm, 2);
+        
+        fast::startvm("test", {
+            {
+                {"name", "anthe1"},
+                {"vcpus", "1"},
+                {"memory", "1048576"}
+            },
+            {
+                {"name", "centos660"},
+                {"vcpus", "1"},
+                {"memory", "524288"}
+            }
+        }, conf.comm, 2);
 
-        while (1) {
-            std::vector<fast::machineConf> confs = {
-                {
-                    {"name", "anthe1"},
-                    {"vcpus", "1"},
-                    {"memory", "1048576"}
-                },
-                {
-                    {"name", "centos660"},
-                    {"vcpus", "1"},
-                    {"memory", "524288"}
-                }
-            };
-            //(std::shared_ptr<fast::MQTT_communicator>)
-            fast::startvm("test", confs, conf.comm, 2);
+        //sleep(5);
+        
+        //fast::stopvm("test",{"anthe1", "centos660"}, conf.comm, 2);
+        //sleep(5);
+       
+        //fast::migratevm("test", "anthe1", "node45",{
+        //    {"live-migration", "false"}
+        //}, conf.comm, 2);
+        sleep(5);
+         
 
-            sleep(5);
 
-            fast::stopvm("test",{"anthe1", "centos660"}, conf.comm, 2);
-            sleep(5);
-
-            fast::migratevm("test", "anthe1", "node45",{
-                {"live-migration", "false"}}, conf.comm, 2);
-            sleep(5);
-            recMessageHandler receive(false, conf.comm);
-            receive.addTopic("fast/migfra/bebo/status", 2);
-            receive.addTopic("fast/agent/bebo/status", 2);
-            std::cout << "before receive" << std::endl;
-            receive.run();
-            std::cout << "after receive" << std::endl;
-        }
+        receive.run();
+        //}
     } catch (const std::exception &e) {
         std::cout << "Exception: " << e.what() << std::endl;
     }

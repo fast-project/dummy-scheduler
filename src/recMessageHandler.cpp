@@ -18,15 +18,22 @@ void recMessageHandler::addTopic(std::string topic, int qos) {
 void recMessageHandler::run() {
     do {
         for (auto &item : topics) {
-            
-            //std::string message = comm->get_message();
 
-            recTaskParser taskParser;
-            std::cout << "before get message" << std::endl;
-            std::string s = comm->get_message(item);
-            std::cout << "after get message" << std::endl;
-            taskParser.from_string(s);
-            taskParser.execute();
+
+            try {
+                recTaskParser taskParser;
+                std::string s = comm->get_message(item, std::chrono::seconds(1));
+                std::cout << "message received" << std::endl;
+                taskParser.from_string(s);
+                taskParser.execute();
+            } catch (const std::runtime_error &e) {
+                if (e.what() != std::string("Timeout while waiting for message."))
+                {
+                    //std::cout << "Timeout while waiting for message." <<std::endl;
+                    continue;
+                }
+            }
+
         }
     } while (loop);
 }

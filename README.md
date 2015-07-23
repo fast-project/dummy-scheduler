@@ -2,7 +2,7 @@
 This repository implements a dummy scheduler which handle MQTT messages.
 The implemented MQTT message follows the formate described in git@chili.zdv.uni-mainz.de:repos/fast/docs/kommunikation.md 
 
-##The implemented MQTT message are :
+##The implemented MQTT messages are :
 
 TX side:
 

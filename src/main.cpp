@@ -43,46 +43,34 @@ int main(int argc, char *argv[]) {
         receive.addTopic("fast/migfra/bebo/status", 2);
         receive.addTopic("fast/agent/bebo/status", 2);
         //while (1) {
-        std::vector<fast::machineConf> confs = {
-            {
-                {"name", "anthe1"},
-                {"vcpus", "1"},
-                {"memory", "1048576"}
-            },
-            {
-                {"name", "centos660"},
-                {"vcpus", "1"},
-                {"memory", "524288"}
-            }
-        };
-        //fast::stopvm("test",{"anthe1", "centos660"}, conf.comm, 2);
+        std::vector<fast::machineConf> confs;
+        confs.push_back({
+            {"name", "anthe1"},
+            {"vcpus", "1"},
+            {"memory", "1048576"}
+        });
+        confs.push_back({
+            {"name", "centos660"},
+            {"vcpus", "1"},
+            {"memory", "524288"}
+        });
+
+
+
+        //fast::startvm("test", confs, conf.comm, 2);
+
+        fast::stopvm("test",{"anthe1", "centos660"}, conf.comm, 2);
+
+        fast::migratevm("test", "anthe1", "node45",{
+            {"live-migration", "false"}}, conf.comm, 2);
+            
+        fast::startvm("test", confs, conf.comm, 2);
         
-        fast::startvm("test", {
-            {
-                {"name", "anthe1"},
-                {"vcpus", "1"},
-                {"memory", "1048576"}
-            },
-            {
-                {"name", "centos660"},
-                {"vcpus", "1"},
-                {"memory", "524288"}
-            }
-        }, conf.comm, 2);
-
-        //sleep(5);
+        fast::initAgent("test", {{{"energy consumption"},{"100"}},{{"IO intensity"},{"low"}}}, "120", conf.comm ,2);
         
-        //fast::stopvm("test",{"anthe1", "centos660"}, conf.comm, 2);
-        //sleep(5);
-       
-        //fast::migratevm("test", "anthe1", "node45",{
-        //    {"live-migration", "false"}
-        //}, conf.comm, 2);
-        sleep(5);
-         
-
-
-        receive.run();
+        fast::stopMonitor("test","ID4256", "154268", conf.comm ,2 );
+        sleep(20);   
+        //receive.run();
         //}
     } catch (const std::exception &e) {
         std::cout << "Exception: " << e.what() << std::endl;

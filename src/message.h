@@ -47,8 +47,6 @@ namespace fast {
         // Override these two methods to state which members should be serialized
         //YAML::Node emit() const override;
         //void load(const YAML::Node &node) override;
-
-
     };
 
 
@@ -57,10 +55,8 @@ namespace fast {
     class startvm : public message {
     public:
 
-        startvm(name hostname, std::vector < machineConf > vm_conf, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
-        : message(topic, comm, "scheduler", STARTVM, Qos), vm_configurations(vm_conf), hostname(hostname) {
-            std::cout << "startvm";
-            this->topic = std::string("fast/migfra/") + hostname + std::string("/task");
+        startvm(name hostname, std::vector < machineConf > & vm_conf, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        : message(std::string("fast/migfra/") + hostname + std::string("/task"), comm, "scheduler", STARTVM, Qos), vm_configurations(vm_conf), hostname(hostname) {
             this->send();
         }
         std::vector < machineConf > vm_configurations;
@@ -95,7 +91,7 @@ namespace fast {
         migratevm(name host, name vm_name, name destination, parameter par, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
         : hostname(host), vm_name(vm_name), destination(destination), par(par),
         message(std::string("fast/migfra/") + host + std::string("/task"), comm, "scheduler", MIGRATEVM, Qos) {
-            this->send();
+           this->send();
         }
         name hostname;
         name vm_name;
@@ -114,9 +110,10 @@ namespace fast {
 
         initAgent(name host, parameter categories, name repeat, std::shared_ptr<fast::MQTT_communicator> comm, int Qos) :
         host(host), categories(categories), repeat(repeat),
-        message( std::string("fast/agent/") + host + std::string("/task"),
+        message(std::string("fast/agent/") + host + std::string("/task"),
         comm,
         "scheduler", INITAGENT, Qos) {
+            this->send();
 
         };
         // Override these two methods to state which members should be serialized
@@ -135,6 +132,7 @@ namespace fast {
         message(std::string("fast/agent/") + host + std::string("/task"),
         comm,
         "scheduler", STOPMONITOR, Qos) {
+            this->send();
         };
         // Override these two methods to state which members should be serialized
         YAML::Node emit() const override;

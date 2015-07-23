@@ -12,6 +12,9 @@
 using namespace fast;
 
 void message::send() {
+    #ifdef DEBUD_1
+    std::cout << "Sending message: with Topic " << this->topic << std::endl;
+    #endif DEBUD_1
     this->comm->send_message(this->to_string(), this->topic, this->Qos);
 }
 
@@ -90,7 +93,7 @@ void fast::initAgent::load(const YAML::Node &node) {
 
 YAML::Node fast::stopMonitor::emit() const {
     YAML::Node node;
-    node["task"] = "stop monitor";
+    node["task"] = "stop monitoring";
     node["job-description"]["job-id"] = job_id;
     node["job-description"]["process-id"] = process_id;
     return node;

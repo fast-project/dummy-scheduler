@@ -5,6 +5,7 @@ The implemented MQTT message follows the formate described in git@chili.zdv.uni-
 ##The implemented MQTT message are :
 
 TX side:
+
     start vm
 
     stop vm
@@ -17,6 +18,7 @@ TX side:
 
 
 RX side:
+
     vmStarted
 
     vmStopped
@@ -60,7 +62,7 @@ make
     ./examples/runTest.bash
     ```
 
-    The run runTest.bash script send some dummy message to test how the scheduler parse incoming MQTT message.
+    The runTest.bash script send some dummy message to test how the scheduler parse incoming MQTT message.
 
 ## ToDo
 

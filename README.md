@@ -1,6 +1,6 @@
 # dummy-scheduler
 This repository implements a dummy scheduler which handle MQTT messages.
-The implemented MQTT message follows the formate described in git@chili.zdv.uni-mainz.de:repos/fast/docs/kommunikation.md 
+The implemented MQTT messages follow the format described in git@chili.zdv.uni-mainz.de:repos/fast/docs/kommunikation.md 
 
 ##The implemented MQTT messages are :
 

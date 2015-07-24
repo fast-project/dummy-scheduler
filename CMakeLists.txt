@@ -131,6 +131,12 @@ configure_file(
 	@ONLY
 )
 
+configure_file(
+	"${PROJECT_SOURCE_DIR}/Doxyfile.in"
+	"${PROJECT_BINARY_DIR}/Doxyfile"
+	@ONLY
+)
+
 ### Build and installation targets
 # Add executable
 add_executable(dummy-scheduler ${SRC})

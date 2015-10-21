@@ -87,7 +87,7 @@ ExternalProject_Add(
 	GIT_REPOSITORY git@github.com:fast-project/fast-lib.git
         #LOG_DOWNLOAD 1
         #DOWNLOAD_DIR fast-lib
-	CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fpic -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 
+	CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fpic -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
 )
 ExternalProject_Get_Property(fastlib install_dir)
 include_directories(${install_dir}/include)
@@ -95,14 +95,16 @@ list(APPEND LIBS ${install_dir}/lib/libfastlib_serialization.a)
 list(APPEND LIBS_BENCHMARK ${install_dir}/lib/libfastlib_serialization.a)
 list(APPEND LIBS ${install_dir}/lib/libfastlib_communication.a)
 list(APPEND LIBS_BENCHMARK ${install_dir}/lib/libfastlib_communication.a)
-list(APPEND LIBS ${install_dir}/src/fastlib-build/libyaml-prefix/lib/libyaml-cpp.a)
+
+list(APPEND LIBS ${install_dir}/src/fastlib-build/yaml-cpp-prefix/lib/libyaml-cpp.a)
 list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libyaml-prefix/lib/libyaml-cpp.a)
-list(APPEND LIBS ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquittopp.a)
-list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquittopp.a)
-list(APPEND LIBS ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquitto.a)
-list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquitto.a)
-list(APPEND LIBS ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
-list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
+
+list(APPEND LIBS ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquittopp.a)
+list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquittopp.a)
+list(APPEND LIBS ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquitto.a)
+list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquitto.a)
+#list(APPEND LIBS ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
+#list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
 
 ### Add config files
 # Doxygen documentation generation
@@ -111,6 +113,8 @@ list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libcares-prefix/lib/
 #	"${PROJECT_BINARY_DIR}/Doxyfile"
 #	@ONLY
 #)
+
+include_directories(/home/jbreitbart/temp/mqtt/dummy-scheduler/build/fastlib-prefix/include/fast-lib/external)
 
 ### Define source files.
 set(SRC ${PROJECT_SOURCE_DIR}/src/main.cpp

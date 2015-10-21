@@ -1,39 +1,36 @@
-/* 
+/*
  * File:   recMessageHandler.cpp
  * Author: gad
- * 
+ *
  * Created on June 29, 2015, 11:38 AM
  */
 
 #include "recMessageHandler.h"
+#include <iostream>
 
-recMessageHandler::~recMessageHandler() {
-}
+recMessageHandler::~recMessageHandler() {}
 
 void recMessageHandler::addTopic(std::string topic, int qos) {
-    comm->add_subscription(topic, qos);
-    topics.push_back(topic);
+	comm->add_subscription(topic, qos);
+	topics.push_back(topic);
 }
 
 void recMessageHandler::run() {
-    do {
-        for (auto &item : topics) {
+	do {
+		for (auto &item : topics) {
 
-
-            try {
-                recTaskParser taskParser;
-                std::string s = comm->get_message(item, std::chrono::seconds(1));
-                std::cout << "message received" << std::endl;
-                taskParser.from_string(s);
-                taskParser.execute();
-            } catch (const std::runtime_error &e) {
-                if (e.what() != std::string("Timeout while waiting for message."))
-                {
-                    //std::cout << "Timeout while waiting for message." <<std::endl;
-                    continue;
-                }
-            }
-
-        }
-    } while (loop);
+			try {
+				recTaskParser taskParser;
+				std::string s = comm->get_message(item, std::chrono::seconds(1));
+				std::cout << "message received" << std::endl;
+				taskParser.from_string(s);
+				taskParser.execute();
+			} catch (const std::runtime_error &e) {
+				if (e.what() != std::string("Timeout while waiting for message.")) {
+					// std::cout << "Timeout while waiting for message." <<std::endl;
+					continue;
+				}
+			}
+		}
+	} while (loop);
 }

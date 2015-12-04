@@ -2,7 +2,7 @@
 This repository implements a dummy scheduler which handle MQTT messages.
 The implemented MQTT messages follow the format described in git@chili.zdv.uni-mainz.de:repos/fast/docs/kommunikation.md 
 
-The scheduler interact to agents initialization requests and initialize agents with random configurations.
+The scheduler interacts to agents initialization requests and initialize agents with random configurations.
 The scheduler send random stopMonitor messages to the initialized agents.
 
 ##The implemented MQTT messages are :

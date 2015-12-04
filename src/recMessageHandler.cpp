@@ -22,8 +22,10 @@ void recMessageHandler::run() {
 
             try {
                 recTaskParser taskParser;
-                std::string s = comm->get_message(item, std::chrono::seconds(1));
-                std::cout << "message received" << std::endl;
+                taskParser.comm = this->comm;
+                //std::cout << "For this topic " << item << std::endl;
+                std::string s = this->comm->get_message(item, std::chrono::seconds(1));//item,
+                //std::cout << "message received" << std::endl;
                 taskParser.from_string(s);
                 taskParser.execute();
             } catch (const std::runtime_error &e) {

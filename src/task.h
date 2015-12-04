@@ -20,6 +20,7 @@
     : public fast::Serializable {
     public:
         task();
+        std::shared_ptr<fast::MQTT_communicator> comm;
         virtual void execute() = 0;
     private:
 

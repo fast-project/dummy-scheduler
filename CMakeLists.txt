@@ -47,6 +47,18 @@ else()
 	message(SEND_ERROR "Boost::program_options is required.")
 endif()
 
+# Cache
+#set(BUILD_SHARED_LIBS OFF CACHE BOOL "If ON build shared, else static libraries.")
+#if(BUILD_SHARED_LIBS)
+#	message(FATAL_ERROR "BUILD_SHARED_LIBS=ON is not supported yet. Use static libs instead.")
+#endif()
+
+set(ENABLE_LOGGING ON CACHE BOOL "Enable logging with boost.log.")
+if(ENABLE_LOGGING)
+	add_definitions(-DFASTLIB_ENABLE_LOGGING)
+endif()
+
+
 # Find mosquittopp
 # find_package(Mosquittopp REQUIRED)
 # if(MOSQUITTOPP_FOUND)
@@ -92,17 +104,20 @@ ExternalProject_Add(
 ExternalProject_Get_Property(fastlib install_dir)
 include_directories(${install_dir}/include)
 list(APPEND LIBS ${install_dir}/lib/libfastlib_serialization.a)
-list(APPEND LIBS_BENCHMARK ${install_dir}/lib/libfastlib_serialization.a)
+#list(APPEND LIBS_BENCHMARK ${install_dir}/lib/libfastlib_serialization.a)
 list(APPEND LIBS ${install_dir}/lib/libfastlib_communication.a)
-list(APPEND LIBS_BENCHMARK ${install_dir}/lib/libfastlib_communication.a)
-list(APPEND LIBS ${install_dir}/src/fastlib-build/libyaml-prefix/lib/libyaml-cpp.a)
-list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libyaml-prefix/lib/libyaml-cpp.a)
-list(APPEND LIBS ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquittopp.a)
-list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquittopp.a)
-list(APPEND LIBS ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquitto.a)
-list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquitto.a)
-list(APPEND LIBS ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
-list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
+#list(APPEND LIBS_BENCHMARK ${install_dir}/lib/libfastlib_communication.a)
+
+
+list(APPEND LIBS ${install_dir}/src/fastlib-build/yaml-cpp-prefix/lib/libyaml-cpp.a)
+#list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/src/yaml-cpp-build/libyaml-cpp.a)
+
+list(APPEND LIBS ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquittopp.a)
+#list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquittopp.a)
+list(APPEND LIBS ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquitto.a)
+#list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquitto.a)
+#list(APPEND LIBS ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
+#list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
 
 ### Add config files
 # Doxygen documentation generation
@@ -112,6 +127,49 @@ list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libcares-prefix/lib/
 #	@ONLY
 #)
 
+
+include_directories("${install_dir}/src/fastlib-build/mosquitto-prefix/include")
+include_directories("${install_dir}/src/fastlib-build/yaml-cpp-prefix/include")
+
+# mosquitto
+#ExternalProject_Add(mosquitto
+#	SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/mosquitto-1.3.5
+#	CMAKE_ARGS -DWITH_SRV=OFF -DWITH_TLS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_C_FLAGS=-fpic -DCMAKE_CXX_FLAGS=-fpic)
+
+# Store mosquitto variables
+#ExternalProject_Get_Property(mosquitto install_dir)
+#set(MOSQUITTO_LIBRARIES ${install_dir}/lib/libmosquittopp.a ${install_dir}/lib/libmosquitto.a) 
+#set(MOSQUITTO_INCLUDE_DIR "${install_dir}/include")
+
+#include_directories("${install_dir}/include")
+# Install headers
+#install(DIRECTORY "${MOSQUITTO_INCLUDE_DIR}/" DESTINATION include/fast-lib/external)
+########
+
+
+
+########
+# yaml-cpp
+#ExternalProject_Add(yaml-cpp
+#	SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/yaml-cpp-0.5.1
+#	CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fpic -DBOOST_ROOT=${BoostSourceDir} -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>)
+
+# Store yaml-cpp variables
+#ExternalProject_Get_Property(yaml-cpp install_dir)
+#set(YAMLCPP_LIBRARY "${install_dir}/lib/libyaml-cpp.a")
+#set(YAMLCPP_INCLUDE_DIR "${install_dir}/include")
+
+# Install headers
+#install(DIRECTORY "${YAMLCPP_INCLUDE_DIR}/" DESTINATION include/fast-lib/external)
+#include_directories("${YAMLCPP_INCLUDE_DIR}")
+########
+
+
+
+
+
+
+
 ### Define source files.
 set(SRC ${PROJECT_SOURCE_DIR}/src/main.cpp
         ${PROJECT_SOURCE_DIR}/src/pluginConfiguration.cpp
@@ -119,6 +177,7 @@ set(SRC ${PROJECT_SOURCE_DIR}/src/main.cpp
         ${PROJECT_SOURCE_DIR}/src/task.cpp
         ${PROJECT_SOURCE_DIR}/src/recTaskParser.cpp
         ${PROJECT_SOURCE_DIR}/src/recMessageHandler.cpp
+        ${PROJECT_SOURCE_DIR}/src/agents.cpp
 )
 
 
@@ -142,7 +201,12 @@ configure_file(
 add_executable(dummy-scheduler ${SRC})
 #add_executable(migfra_benchmark ${SRC_BENCHMARK})
 
-add_dependencies(dummy-scheduler fastlib)
+add_dependencies(dummy-scheduler fastlib mosquitto yaml-cpp)
 
 target_link_libraries(dummy-scheduler ${LIBS})
+
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach(dir ${dirs})
+  message(STATUS "dir='${dir}'")
+endforeach()
 #target_link_libraries(migfra_benchmark ${LIBS_BENCHMARK})

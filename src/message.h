@@ -15,11 +15,12 @@
 #include <fast-lib/serialization/serializable.hpp>
 #include <fast-lib/communication/mqtt_communicator.hpp>
 namespace fast {
-
+    
     enum messageType {
         STARTVM, STOPVM, MIGRATEVM, INITAGENT, STOPMONITOR
     };
     typedef std::string name;
+    typedef std::string hostname;
     typedef std::vector<name> machines;
     typedef std::map <name, name > machineConf;
     typedef std::map <name, name > parameter;
@@ -110,7 +111,7 @@ namespace fast {
 
         initAgent(name host, parameter categories, name repeat, std::shared_ptr<fast::MQTT_communicator> comm, int Qos) :
         host(host), categories(categories), repeat(repeat),
-        message(std::string("fast/agent/") + host + std::string("/task"),
+        message(std::string("fast/agent/") + host + std::string("/task/init_agent"),
         comm,
         "scheduler", INITAGENT, Qos) {
             this->send();
@@ -129,7 +130,7 @@ namespace fast {
 
         stopMonitor(name host, name job_id, name process_id, std::shared_ptr<fast::MQTT_communicator> comm, int Qos) :
         host(host), job_id(job_id), process_id(process_id),
-        message(std::string("fast/agent/") + host + std::string("/task"),
+        message(std::string("fast/agent/") + host + std::string("/task/stop_monitoring"),
         comm,
         "scheduler", STOPMONITOR, Qos) {
             this->send();

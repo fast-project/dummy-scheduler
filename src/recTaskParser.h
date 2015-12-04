@@ -18,6 +18,7 @@ public:
     recTaskParser(const recTaskParser& orig);
     virtual ~recTaskParser();
     std::vector< std::unique_ptr<task> > tasks;
+    std::shared_ptr<fast::MQTT_communicator> comm;
     void execute();
     YAML::Node emit() const override;
     void load(const YAML::Node &node) override;

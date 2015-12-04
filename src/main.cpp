@@ -16,9 +16,12 @@
 #include <exception>
 #include <iostream>
 #include <unistd.h>
-#include  "pluginConfiguration.h"
+#include "pluginConfiguration.h"
 #include "message.h"
 #include "recMessageHandler.h"
+#include "agents.h"
+//Global Variable
+std::map<fast::hostname, fast::agentProperties> agentMap;
 
 int main(int argc, char *argv[]) {
     try {
@@ -39,9 +42,14 @@ int main(int argc, char *argv[]) {
             config_file_name = vm["config"].as<std::string>();
 
         pluginConfiguration conf(config_file_name);
-        recMessageHandler receive(true, conf.comm);
-        receive.addTopic("fast/migfra/bebo/status", 2);
-        receive.addTopic("fast/agent/bebo/status", 2);
+        //fast::globalPlgConf = &conf;
+        recMessageHandler receive(false, conf.comm);
+        //std::cout << "debug1\n";
+        receive.addTopic("fast/migfra/+/status", 2);
+        //std::cout << "debug2\n";
+        receive.addTopic("fast/agent/+/status", 2);
+        //std::cout << "debug3\n";
+
         //while (1) {
         std::vector<fast::machineConf> confs;
         confs.push_back({
@@ -57,20 +65,29 @@ int main(int argc, char *argv[]) {
 
 
 
-        //fast::startvm("test", confs, conf.comm, 2);
+        fast::startvm("test", confs, conf.comm, 2);
 
         fast::stopvm("test",{"anthe1", "centos660"}, conf.comm, 2);
 
         fast::migratevm("test", "anthe1", "node45",{
-            {"live-migration", "false"}}, conf.comm, 2);
-            
-        fast::startvm("test", confs, conf.comm, 2);
-        
-        fast::initAgent("test", {{{"energy consumption"},{"100"}},{{"IO intensity"},{"low"}}}, "120", conf.comm ,2);
-        
-        fast::stopMonitor("test","ID4256", "154268", conf.comm ,2 );
-        sleep(20);   
-        //receive.run();
+            {"live-migration", "false"}
+        }, conf.comm, 2);
+
+        //fast::startvm("test", confs, conf.comm, 2);
+
+        //fast::initAgent("test", {{{"energy consumption"},{"100"}},{{"IO intensity"},{"low"}}}, "120", conf.comm ,2);
+
+        //fast::stopMonitor("test","ID4256", "154268", conf.comm ,2 );
+
+        while (1) {
+            //std::cout << "receiving" << std::endl;
+            receive.run();
+            sleep(1);
+            fast::initializeAgents(conf.comm);
+            fast::printInitializedAgents();
+            fast::sendRandomStopMonitor(conf.comm);
+
+        }
         //}
     } catch (const std::exception &e) {
         std::cout << "Exception: " << e.what() << std::endl;

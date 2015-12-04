@@ -2,6 +2,9 @@
 This repository implements a dummy scheduler which handle MQTT messages.
 The implemented MQTT messages follow the format described in git@chili.zdv.uni-mainz.de:repos/fast/docs/kommunikation.md 
 
+The scheduler interact to agents initialization requests and initialize agents with random configurations.
+The scheduler send random stopMonitor messages to the initialized agents.
+
 ##The implemented MQTT messages are :
 
 TX side:
@@ -64,6 +67,28 @@ make
 
     The runTest.bash script send some dummy message to test how the scheduler parse incoming MQTT message.
 
+## Testing interaction with agents
+1. start the mosquitto daemon 
+
+    ```bash  
+    mosquitto -c /etc/mosquitto/mosquitto.conf
+    ```
+2. listen to all transmitted messages
+
+    ```bash
+    mosquitto_sub -t "fast/agent/#"
+    ```
+3. simulate agents initialization requests
+
+    ```bash
+    ./examples/init_agent.bash
+    ```
+4. run dummy-scheduler
+
+    ```bash
+    ./dummy-scheduler  //the scheduler configuration can be see in this file  ./scheduler.conf  
+    ```
+   
 ## ToDo
 
 1. Add a doxygen documentation.

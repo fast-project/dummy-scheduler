@@ -25,24 +25,28 @@ void recTaskParser::load(const YAML::Node& node) {
 
             std::unique_ptr<task> p(new vmStarted);
             p->load(node);
+            p->comm = this->comm;
             tasks.push_back(std::move(p));
 
         } else if (node["result"].as<std::string>() == std::string("vm stopped")) {
 
             std::unique_ptr<task> p(new vmStoped());
             p->load(node);
+            p->comm = this->comm;
             tasks.push_back(std::move(p));
         } else
             if (node["result"].as<std::string>() == std::string("vm migrated")) {
 
             std::unique_ptr<task> p(new vmMigrated());
             p->load(node);
+            p->comm = this->comm;
             tasks.push_back(std::move(p));
         }
     } else if (node["task"]) {
         if (node["task"].as<std::string>() == std::string("init")) {
             std::unique_ptr<task> p(new initAgent());
             p->load(node);
+            p->comm = this->comm;
             tasks.push_back(std::move(p));
         }
 

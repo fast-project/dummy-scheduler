@@ -9,9 +9,10 @@
 
 recTaskParser::recTaskParser() {
 }
-
+/*
 recTaskParser::recTaskParser(const recTaskParser& orig) {
-}
+    
+}*/
 
 recTaskParser::~recTaskParser() {
 }
@@ -51,8 +52,8 @@ void recTaskParser::load(const YAML::Node& node) {
         }
 
     } else {
-        //throw std::runtime_error("receiving Unsupported message\n");
-        std::cout << "receiving Unsupported message\n";
+        throw std::runtime_error("receiving Unsupported message\n");
+        //std::cout << "receiving Unsupported message\n";
     }
 }
 
@@ -63,5 +64,6 @@ void recTaskParser::execute() {
 }
 
 YAML::Node recTaskParser::emit() const {
-
+    YAML::Node t;
+    return t;
 }

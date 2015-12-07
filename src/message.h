@@ -6,7 +6,7 @@
  */
 
 #ifndef MESSAGE_H
-#define	MESSAGE_H
+#define MESSAGE_H
 
 #include <string>
 #include <vector>
@@ -15,7 +15,7 @@
 #include <fast-lib/serialization/serializable.hpp>
 #include <fast-lib/communication/mqtt_communicator.hpp>
 namespace fast {
-    
+
     enum messageType {
         STARTVM, STOPVM, MIGRATEVM, INITAGENT, STOPMONITOR
     };
@@ -75,9 +75,9 @@ namespace fast {
         machines vmMachines;
 
         stopvm(name host, machines vmMachines, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
-        : hostname(host), vmMachines(vmMachines),
-        message(std::string("fast/migfra/") + host + std::string("/task")
-        , comm, "scheduler", STARTVM, Qos) {
+        : message(std::string("fast/migfra/") + host + std::string("/task")
+        , comm, "scheduler", STARTVM, Qos),hostname(host), vmMachines(vmMachines)
+         {
             this->send();
         }
 
@@ -90,9 +90,9 @@ namespace fast {
     public:
 
         migratevm(name host, name vm_name, name destination, parameter par, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
-        : hostname(host), vm_name(vm_name), destination(destination), par(par),
-        message(std::string("fast/migfra/") + host + std::string("/task"), comm, "scheduler", MIGRATEVM, Qos) {
-           this->send();
+        : message(std::string("fast/migfra/") + host + std::string("/task"), comm, "scheduler", MIGRATEVM, Qos),
+        hostname(host), vm_name(vm_name), destination(destination), par(par) {
+            this->send();
         }
         name hostname;
         name vm_name;
@@ -110,10 +110,11 @@ namespace fast {
         name repeat;
 
         initAgent(name host, parameter categories, name repeat, std::shared_ptr<fast::MQTT_communicator> comm, int Qos) :
-        host(host), categories(categories), repeat(repeat),
         message(std::string("fast/agent/") + host + std::string("/task/init_agent"),
         comm,
-        "scheduler", INITAGENT, Qos) {
+        "scheduler", INITAGENT, Qos),
+        host(host), categories(categories), repeat(repeat)
+         {
             this->send();
 
         };
@@ -129,10 +130,10 @@ namespace fast {
         name process_id;
 
         stopMonitor(name host, name job_id, name process_id, std::shared_ptr<fast::MQTT_communicator> comm, int Qos) :
-        host(host), job_id(job_id), process_id(process_id),
         message(std::string("fast/agent/") + host + std::string("/task/stop_monitoring"),
         comm,
-        "scheduler", STOPMONITOR, Qos) {
+        "scheduler", STOPMONITOR, Qos),
+        host(host), job_id(job_id), process_id(process_id) {
             this->send();
         };
         // Override these two methods to state which members should be serialized
@@ -142,5 +143,5 @@ namespace fast {
 
 
 }
-#endif	/* MESSAGE_H */
+#endif /* MESSAGE_H */
 

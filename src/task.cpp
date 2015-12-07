@@ -24,7 +24,8 @@ void vmStarted::execute() {
 }
 
 YAML::Node vmStarted::emit() const {
-    //return 0;
+   YAML::Node n;
+    return n;
 }
 
 void vmStarted::load(const YAML::Node& node) {
@@ -59,7 +60,8 @@ void vmStoped::load(const YAML::Node& node) {
 }
 
 YAML::Node vmStoped::emit() const {
-    //return 0;
+    YAML::Node n;
+    return n;
 }
 
 void vmMigrated::execute() {
@@ -68,7 +70,8 @@ void vmMigrated::execute() {
 }
 
 YAML::Node vmMigrated::emit() const {
-    //return 0;
+    YAML::Node n;
+    return n;
 }
 
 void vmMigrated::load(const YAML::Node& node) {
@@ -89,7 +92,8 @@ void initAgent::execute() {
 }
 
 YAML::Node initAgent::emit() const {
-
+    YAML::Node n;
+    return n;
 }
 
 void initAgent::load(const YAML::Node& node) {

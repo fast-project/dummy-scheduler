@@ -15,7 +15,7 @@ class recTaskParser
 : public fast::Serializable {
 public:
     recTaskParser();
-    recTaskParser(const recTaskParser& orig);
+    //recTaskParser(const recTaskParser& orig);
     virtual ~recTaskParser();
     std::vector< std::unique_ptr<task> > tasks;
     std::shared_ptr<fast::MQTT_communicator> comm;

@@ -24,8 +24,9 @@ else()
 	message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pthread -Wreorder")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wall -Wextra -pthread -Wreorder ")
 
+MESSAGE( STATUS "CMAKE_CXX_FLAGS:         " ${CMAKE_CXX_FLAGS} )
 ### Find libraries
 # Find yaml-cpp
 # find_package(YamlCpp REQUIRED)
@@ -201,7 +202,7 @@ configure_file(
 add_executable(dummy-scheduler ${SRC})
 #add_executable(migfra_benchmark ${SRC_BENCHMARK})
 
-add_dependencies(dummy-scheduler fastlib mosquitto yaml-cpp)
+add_dependencies(dummy-scheduler fastlib )
 
 target_link_libraries(dummy-scheduler ${LIBS})
 

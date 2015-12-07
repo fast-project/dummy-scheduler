@@ -14,7 +14,7 @@ using namespace fast;
 void message::send() {
     #ifdef DEBUD_1
     std::cout << "Sending message: with Topic " << this->topic << std::endl;
-    #endif DEBUD_1
+    #endif 
     this->comm->send_message(this->to_string(), this->topic, this->Qos);
 }
 

@@ -17,8 +17,8 @@
 #include <iostream>
 #include <unistd.h>
 #include <vector>
-#include <c++/4.9/fstream>
-#include <c++/4.8/istream>
+#include <fstream>
+#include <istream>
 #include "pluginConfiguration.h"
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem.hpp>
@@ -280,9 +280,15 @@ int main(int argc, char *argv[]) {
 
                 }
             }
-            if(failed) {std::cout<<"Failed\n";return 0;}
-            if(inProgress){std::cout <<"In progress"<<std::endl;return 0;}
-            std::cout<< "success\n";
+            if (failed) {
+                std::cout << "Failed\n";
+                return 0;
+            }
+            if (inProgress) {
+                std::cout << "In progress" << std::endl;
+                return 0;
+            }
+            std::cout << "success\n";
             return 0;
         }
         /*

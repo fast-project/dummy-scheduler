@@ -6,6 +6,7 @@
  */
 
 #include "recMessageHandler.h"
+#include <iostream>
 
 recMessageHandler::~recMessageHandler() {
 }
@@ -25,7 +26,7 @@ void recMessageHandler::run() {
                 taskParser.comm = this->comm;
                 //std::cout << "For this topic " << item << std::endl;
                 std::string s = this->comm->get_message(item, std::chrono::seconds(1));//item,
-                //std::cout << "message received" << std::endl;
+                std::cout << "message received" << std::endl;
                 taskParser.from_string(s);
                 taskParser.execute();
             } catch (const std::runtime_error &e) {

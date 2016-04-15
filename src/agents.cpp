@@ -6,7 +6,7 @@
 
 #include "agents.h"
 #include <string>
-
+#include <iostream>
 fast::agentProperties fast::creatRandomAgentProperties() {
     std::string levels[] = {"low", "medium", "high"};
     fast::agentProperties P;

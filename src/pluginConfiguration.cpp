@@ -5,7 +5,7 @@
  * Created on June 8, 2015, 6:18 PM
  */
 
-#include <fast-lib/communication/mqtt_communicator.hpp>
+#include <fast-lib/mqtt_communicator.hpp>
 #include <mosquittopp.h>
 
 #include "pluginConfiguration.h"

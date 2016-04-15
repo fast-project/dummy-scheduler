@@ -22,7 +22,7 @@
 #include "agents.h"
 //Global Variable
 std::map<fast::hostname, fast::agentProperties> agentMap;
-
+YAML::Node configPublic;
 int main(int argc, char *argv[]) {
     try {
         namespace bo = boost::program_options;
@@ -65,11 +65,11 @@ int main(int argc, char *argv[]) {
 
 
 
-        fast::startvm("test", confs, conf.comm, 2);
+        fast::startvm("test","UUID1", confs, conf.comm, 2);
 
-        fast::stopvm("test",{"anthe1", "centos660"}, conf.comm, 2);
+        fast::stopvm("test","UUID2",{"anthe1", "centos660"}, conf.comm, 2);
 
-        fast::migratevm("test", "anthe1", "node45",{
+        fast::migratevm("test", "UUID3", "anthe1", "node45",{
             {"live-migration", "false"}
         }, conf.comm, 2);
 

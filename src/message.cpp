@@ -6,7 +6,7 @@
  */
 
 #include "message.h"
-#include <fast-lib/communication/mqtt_communicator.hpp>
+#include <fast-lib/mqtt_communicator.hpp>
 //#include <fast-lib/communication/mqtt_communicator.hpp>
 
 using namespace fast;
@@ -22,6 +22,7 @@ YAML::Node startvm::emit() const {
     YAML::Node node, node1;
     node["task"] = "start vm";
     node["host"] = hostname;
+    node["id"] = UUID;
     for (auto &item : this->vm_configurations) {
         YAML::Node node2;
         for (auto &mp : item) {
@@ -41,7 +42,7 @@ YAML::Node fast::stopvm::emit() const {
     YAML::Node node, node1;
     node["task"] = "stop vm";
     node["host"] = hostname;
-    
+    node["id"] = UUID;    
     for (auto &item : this->vmMachines) {
         YAML::Node node2;
         node2["vm-name"] = item;
@@ -61,9 +62,10 @@ YAML::Node fast::migratevm::emit() const {
     YAML::Node node, node1;
     node["task"] = "migrate vm";
     node["host"] = hostname;
-    
-    node["vm-name"] = this->vm_name;
+    node["id"] = UUID;
+    node["name"] = this->vm_name;
     node["destination"] = this->destination;
+    node["time-measurement"] = "true";
     for(auto &item : this->par)
     {
         node1[item.first]=item.second;

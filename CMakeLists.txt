@@ -24,7 +24,7 @@ else()
 	message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wall -Wextra -pthread -Wreorder ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wall -Wextra -pthread -Wreorder -lboost_system")#-DBOOST_SYSTEM_NO_DEPRECATED")
 
 MESSAGE( STATUS "CMAKE_CXX_FLAGS:         " ${CMAKE_CXX_FLAGS} )
 ### Find libraries
@@ -39,11 +39,15 @@ MESSAGE( STATUS "CMAKE_CXX_FLAGS:         " ${CMAKE_CXX_FLAGS} )
 # endif()
 
 # Find boost
-find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost COMPONENTS program_options filesystem regex REQUIRED)
 if(Boost_FOUND)
 	include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-	list(APPEND LIBS "${Boost_LIBRARIES}")
+	#
+        list(APPEND LIBS "${Boost_FILESYSTEM_LIBRARIES}")
+        list(APPEND LIBS "${Boost_LIBRARIES}")
 	list(APPEND LIBS_BENCHMARK "${Boost_LIBRARIES}")
+        message(STATUS "${Boost_LIBRARIES}")
+        
 else()
 	message(SEND_ERROR "Boost::program_options is required.")
 endif()
@@ -104,18 +108,20 @@ ExternalProject_Add(
 )
 ExternalProject_Get_Property(fastlib install_dir)
 include_directories(${install_dir}/include)
-list(APPEND LIBS ${install_dir}/lib/libfastlib_serialization.a)
+#list(APPEND LIBS ${install_dir}/lib/libfastlib_serialization.a)
 #list(APPEND LIBS_BENCHMARK ${install_dir}/lib/libfastlib_serialization.a)
-list(APPEND LIBS ${install_dir}/lib/libfastlib_communication.a)
+#list(APPEND LIBS ${install_dir}/lib/libfastlib_communication.a)
 #list(APPEND LIBS_BENCHMARK ${install_dir}/lib/libfastlib_communication.a)
 
+list(APPEND LIBS ${install_dir}/lib/libfastlib.a)
 
-list(APPEND LIBS ${install_dir}/src/fastlib-build/yaml-cpp-prefix/lib/libyaml-cpp.a)
+
+#list(APPEND LIBS ${install_dir}/src/fastlib-build/yaml-cpp-prefix/lib/libyaml-cpp.a)
 #list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/src/yaml-cpp-build/libyaml-cpp.a)
 
-list(APPEND LIBS ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquittopp.a)
+#list(APPEND LIBS ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquittopp.a)
 #list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquittopp.a)
-list(APPEND LIBS ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquitto.a)
+#list(APPEND LIBS ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosquitto.a)
 #list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libmosquitto-prefix/lib/libmosquitto.a)
 #list(APPEND LIBS ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
 #list(APPEND LIBS_BENCHMARK ${install_dir}/src/fastlib-build/libcares-prefix/lib/libcares.a)
@@ -131,6 +137,7 @@ list(APPEND LIBS ${install_dir}/src/fastlib-build/mosquitto-prefix/lib/libmosqui
 
 include_directories("${install_dir}/src/fastlib-build/mosquitto-prefix/include")
 include_directories("${install_dir}/src/fastlib-build/yaml-cpp-prefix/include")
+#include_directories("${install_dir}/include")
 
 # mosquitto
 #ExternalProject_Add(mosquitto
@@ -181,7 +188,15 @@ set(SRC ${PROJECT_SOURCE_DIR}/src/main.cpp
         ${PROJECT_SOURCE_DIR}/src/agents.cpp
 )
 
-
+set(SRC_FAST_INTER 	${PROJECT_SOURCE_DIR}/src/fast-mqtt.cpp
+        	 	${PROJECT_SOURCE_DIR}/src/pluginConfiguration.cpp
+        		${PROJECT_SOURCE_DIR}/src/message.cpp
+        		${PROJECT_SOURCE_DIR}/src/task.cpp
+        		${PROJECT_SOURCE_DIR}/src/recTaskParser.cpp
+        		${PROJECT_SOURCE_DIR}/src/recMessageHandler.cpp
+        		${PROJECT_SOURCE_DIR}/src/agents.cpp
+)
+ 
 
 
 # Add migfra.conf as runtime configuration file.
@@ -205,6 +220,13 @@ add_executable(dummy-scheduler ${SRC})
 add_dependencies(dummy-scheduler fastlib )
 
 target_link_libraries(dummy-scheduler ${LIBS})
+
+add_executable(fast-mqtt	${SRC_FAST_INTER})
+add_dependencies(fast-mqtt fastlib)
+target_link_libraries(fast-mqtt ${LIBS})
+ message(STATUS "fast-mqtt ${Boost_LIBRARIES}")
+
+
 
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 foreach(dir ${dirs})

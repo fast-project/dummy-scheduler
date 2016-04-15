@@ -2,7 +2,9 @@
 
 ---
 result: vm migrated
-vm-name: bebo3
-status: success
-process-id: 789
+name: bebo3
+status:
+  result: success
+  process-id: 789
+  retries: 5
 ...

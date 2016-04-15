@@ -8,7 +8,7 @@
 #ifndef RECTASKPARSER_H
 #define	RECTASKPARSER_H
 
-#include <fast-lib/serialization/serializable.hpp>
+#include <fast-lib/serializable.hpp>
 #include "task.h"
 
 class recTaskParser

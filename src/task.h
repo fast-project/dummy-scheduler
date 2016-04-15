@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string>
 
-#include <fast-lib/serialization/serializable.hpp>
+#include <fast-lib/serializable.hpp>
 
 //namespace fast {
 
@@ -41,17 +41,17 @@
     
     
     
-    class vmStoped
+    class vmStopped
     : public task {
     public:
-       vmStoped() {};
+       vmStopped() {};
         void execute() override;
         YAML::Node emit() const override;
         void load(const YAML::Node &node) override;
         std::vector < fast::machineConf > vm_configurations;
         fast::name hostname;
     };
-    YAML_CONVERT_IMPL(vmStoped)
+    YAML_CONVERT_IMPL(vmStopped)
     
     
     class vmMigrated
@@ -77,7 +77,30 @@
         fast::name hostname;
     };
     YAML_CONVERT_IMPL(initAgent)
+    
+    class agentKPI
+    :   public task {
+    public:
+        agentKPI(){};
+        void execute() override;
+        YAML::Node emit() const override;
+        void load(const YAML::Node &node) override;
+        fast::name hostname;
+        fast::name KPIs;
+    };
+    YAML_CONVERT_IMPL(agentKPI)
             
+    class agentStatus
+    : public task {
+    public:
+        agentStatus(){};
+        void execute() override;
+        YAML::Node emit() const override;
+        void load(const YAML::Node &node) override;
+        fast::name hostname;
+        fast::name status;
+    };
+    YAML_CONVERT_IMPL(agentStatus)        
 //}
 
 

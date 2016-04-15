@@ -8,9 +8,9 @@
 #ifndef PLUGINCONFIGURATION_H
 #define	PLUGINCONFIGURATION_H
 
-#include <fast-lib/communication/communicator.hpp>
-#include <fast-lib/communication/mqtt_communicator.hpp>
-#include <fast-lib/serialization/serializable.hpp>
+#include <fast-lib/communicator.hpp>
+#include <fast-lib/mqtt_communicator.hpp>
+#include <fast-lib/serializable.hpp>
 
 
 class pluginConfiguration : fast::Serializable {

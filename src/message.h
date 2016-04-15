@@ -12,8 +12,8 @@
 #include <vector>
 #include <map>
 
-#include <fast-lib/serialization/serializable.hpp>
-#include <fast-lib/communication/mqtt_communicator.hpp>
+#include <fast-lib/serializable.hpp>
+#include <fast-lib/mqtt_communicator.hpp>
 namespace fast {
 
     enum messageType {
@@ -56,10 +56,11 @@ namespace fast {
     class startvm : public message {
     public:
 
-        startvm(name hostname, std::vector < machineConf > & vm_conf, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
-        : message(std::string("fast/migfra/") + hostname + std::string("/task"), comm, "scheduler", STARTVM, Qos), vm_configurations(vm_conf), hostname(hostname) {
+        startvm(name hostname,name UUID, std::vector < machineConf > & vm_conf, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        : message(std::string("fast/migfra/") + hostname + std::string("/task"), comm, "scheduler", STARTVM, Qos), UUID(UUID) ,vm_configurations(vm_conf), hostname(hostname) {
             this->send();
         }
+        name UUID;
         std::vector < machineConf > vm_configurations;
         name hostname;
 
@@ -73,10 +74,10 @@ namespace fast {
     public:
         name hostname;
         machines vmMachines;
-
-        stopvm(name host, machines vmMachines, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        name UUID;
+        stopvm(name host, name UUID , machines vmMachines, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
         : message(std::string("fast/migfra/") + host + std::string("/task")
-        , comm, "scheduler", STARTVM, Qos),hostname(host), vmMachines(vmMachines)
+        , comm, "scheduler", STARTVM, Qos),hostname(host), vmMachines(vmMachines), UUID(UUID)
          {
             this->send();
         }
@@ -89,15 +90,16 @@ namespace fast {
     class migratevm : public message {
     public:
 
-        migratevm(name host, name vm_name, name destination, parameter par, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        migratevm(name host, name UUID, name vm_name, name destination, parameter par, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
         : message(std::string("fast/migfra/") + host + std::string("/task"), comm, "scheduler", MIGRATEVM, Qos),
-        hostname(host), vm_name(vm_name), destination(destination), par(par) {
+        hostname(host), vm_name(vm_name), destination(destination), par(par), UUID(UUID) {
             this->send();
         }
         name hostname;
         name vm_name;
         name destination;
         parameter par;
+        name UUID;
         // Override these two methods to state which members should be serialized
         YAML::Node emit() const override;
         void load(const YAML::Node &node) override;

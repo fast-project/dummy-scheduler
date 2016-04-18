@@ -33,6 +33,8 @@ void vmStarted::execute() {
         std::string directory = configPublic["receive"]["path"].as<std::string>()
                 + "/status/" + item["vm-name"];
         boost::filesystem::create_directories(boost::filesystem::path{directory});
+        
+        /*
         std::string fifoName = directory + "/vmStarted";
 
 
@@ -46,7 +48,8 @@ void vmStarted::execute() {
         std::string data = item["status"] + "\n";
         write(fd, data.c_str(), data.size());
         close(fd);
-        /*
+        */
+    
         outputfile.open(directory + "/vmStarted", std::ios::trunc);
         if (outputfile.is_open()) {
             outputfile << item["status"] << std::endl;
@@ -54,7 +57,6 @@ void vmStarted::execute() {
             std::cout << "Error opening file: " << directory + "/vmStarted" << std::endl;
         }
         outputfile.close();
-         */
     }
 }
 
@@ -87,6 +89,7 @@ void vmStopped::execute() {
         std::string directory = configPublic["receive"]["path"].as<std::string>()
                 + "/status/" + item["vm-name"];
         boost::filesystem::create_directories(directory);
+        /*
         std::string fifoName = directory + "/vmStopped";
 
         if (access(fifoName.c_str(), F_OK) != -1) {
@@ -99,14 +102,15 @@ void vmStopped::execute() {
         std::string data = item["status"] + "\n";
         write(fd, data.c_str(), data.size());
         close(fd);
-        /*
+        */
+        
         outputfile.open(directory + "/vmStopped", std::ios::trunc);
         if (outputfile.is_open()) {
             outputfile << item["status"] << std::endl;
         } else {
             std::cout << "Error opening file" << directory + "/vmStopped" << std::endl;
         }
-        outputfile.close();*/
+        outputfile.close();
     }
 }
 
@@ -133,7 +137,7 @@ void vmMigrated::execute() {
             + "/status/" + this->vmName;
     boost::filesystem::create_directories(directory);
 
-    std::string fifoName = directory + "/vmMigrated";
+    /*std::string fifoName = directory + "/vmMigrated";
 
     if (access(fifoName.c_str(), F_OK) != -1) {
         // file exists
@@ -145,14 +149,16 @@ void vmMigrated::execute() {
     std::string data = this->status + " " + this->processID + "\n";
     write(fd, data.c_str(), data.size());
     close(fd);
-    /*
+     */
+    
+    
     outputfile.open(directory + "/vmMigrated", std::ios::trunc);
     if (outputfile.is_open()) {
     outputfile << this->status << " " << this->processID << std::endl;
     } else {
     std::cout << "Error opening file" << directory + "/vmMigrated" << std::endl;
     }
-    outputfile.close();*/
+    outputfile.close();
 }
 
 YAML::Node vmMigrated::emit() const {

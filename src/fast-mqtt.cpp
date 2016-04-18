@@ -25,6 +25,7 @@
 #include "message.h"
 #include "recMessageHandler.h"
 #include "agents.h"
+#include <fast-lib/log.hpp>
 //Global Variable
 std::map<fast::hostname, fast::agentProperties> agentMap;
 YAML::Node configPublic;
@@ -87,6 +88,7 @@ int main(int argc, char *argv[]) {
                     {"overlay-image", configPublic["vm"]["overlay-image"].as<std::string>() + arguments[1]},
                     {"base-image", configPublic["vm"]["base-image"].as<std::string>()}
                 });
+                
                 fast::startvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), confs, conf.comm, 2);
             }
         }
@@ -98,7 +100,7 @@ int main(int argc, char *argv[]) {
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
 
                 fast::stopvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), {
-                    arguments[1]
+                    arguments[0]
                 }, conf.comm, 2);
             }
         }
@@ -173,7 +175,7 @@ int main(int argc, char *argv[]) {
                 std::string directory = configPublic["receive"]["path"].as<std::string>()
                         + "/status/" + vmname;
                 std::ifstream ofS;
-                ofS.open(directory + "vmStarted");
+                ofS.open(directory + "/vmStarted");
                 if (ofS.is_open()) {
                     std::string outbuffer;
                     std::getline(ofS, outbuffer);
@@ -196,7 +198,7 @@ int main(int argc, char *argv[]) {
                 std::string directory = configPublic["receive"]["path"].as<std::string>()
                         + "/status/" + vmname;
                 std::ifstream ofS;
-                ofS.open(directory + "vmStopped");
+                ofS.open(directory + "/vmStopped");
                 if (ofS.is_open()) {
                     std::string outbuffer;
                     std::getline(ofS, outbuffer);
@@ -219,7 +221,7 @@ int main(int argc, char *argv[]) {
                 std::string directory = configPublic["receive"]["path"].as<std::string>()
                         + "/status/" + vmname;
                 std::ifstream ofS;
-                ofS.open(directory + "vmMigrated");
+                ofS.open(directory + "/vmMigrated");
                 if (ofS.is_open()) {
                     std::string outbuffer;
                     std::getline(ofS, outbuffer);

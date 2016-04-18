@@ -7,13 +7,14 @@
 
 #include "message.h"
 #include <fast-lib/mqtt_communicator.hpp>
+#include <iostream>
 //#include <fast-lib/communication/mqtt_communicator.hpp>
 
 using namespace fast;
 
 void message::send() {
     #ifdef DEBUD_1
-    std::cout << "Sending message: with Topic " << this->topic << std::endl;
+    std::cout << "Sending message: "<< this->to_string()  << "with Topic " << this->topic << std::endl;
     #endif 
     this->comm->send_message(this->to_string(), this->topic, this->Qos);
 }

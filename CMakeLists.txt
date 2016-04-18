@@ -195,6 +195,7 @@ set(SRC_FAST_INTER 	${PROJECT_SOURCE_DIR}/src/fast-mqtt.cpp
         		${PROJECT_SOURCE_DIR}/src/recTaskParser.cpp
         		${PROJECT_SOURCE_DIR}/src/recMessageHandler.cpp
         		${PROJECT_SOURCE_DIR}/src/agents.cpp
+                        ${PROJECT_SOURCE_DIR}/src/utilites.cpp
 )
  
 

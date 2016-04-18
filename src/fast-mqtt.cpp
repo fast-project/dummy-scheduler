@@ -30,11 +30,7 @@
 #include "message.h"
 #include "recMessageHandler.h"
 #include "agents.h"
-<<<<<<< HEAD
-#include <fast-lib/log.hpp>
-=======
-//#include <fast-lib/log.hpp>
->>>>>>> 3b9113e06f5aa3c3ad289b67aadde6a7a6cb4922
+#include "utilites.h"
 //Global Variable
 std::map<fast::hostname, fast::agentProperties> agentMap;
 YAML::Node configPublic;
@@ -99,11 +95,7 @@ try {
                     {"overlay-image", configPublic["vm"]["overlay-image"].as<std::string>() + arguments[1]},
                     {"base-image", configPublic["vm"]["base-image"].as<std::string>()}
                 });
-<<<<<<< HEAD
-                
-=======
-   
->>>>>>> 3b9113e06f5aa3c3ad289b67aadde6a7a6cb4922
+
                 fast::startvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), confs, conf.comm, 2);
 		sleep(1);
             }
@@ -184,13 +176,12 @@ try {
                 fast::initAgent(host, AgentConf, configPublic["agent"]["repeat"].as<std::string>(), conf.comm, 2);
             }
         }
-	std::cout <<"debug0\n";
+	
         if (vm.count("statusStartvm")) {
             fast::name vmname;
-		std::cout <<"debug00\n";
-	    
+		
             if (vm.count("Command Parameter")) {
-		std::cout <<"debug000\n";
+		
 		std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
                 vmname = {arguments[0]};
                 std::string directory = configPublic["receive"]["path"].as<std::string>()
@@ -199,26 +190,20 @@ try {
 
                 ofS.open(directory + "/vmStarted");
 
-		std::cout <<"debug0000\n";
-		std::string full = directory+ "/vmStarted";
-
-					
-                ofS.open(directory + "/vmStarted");
-		std::cout <<"Debug1\n";  
-
                 if (ofS.is_open()) {
-		std::cout <<"Debug2\n";
-		std::cout <<"Debug2\n";
+                    //std::cout << "Openning "<< directory + "/vmStarted" << std::endl;
                     std::string outbuffer;
                     std::getline(ofS, outbuffer);
                     if (outbuffer.size() < 2) {
                         std::cout << "Undefined" << std::endl;
                     } else {
                         std::cout << outbuffer << std::endl;
+                        ofS.close();
+                        clearFile(directory + "/vmStarted");
                     }
                 } else {
-                    std::cerr << "Error statusStartvm: unable to open " << directory + "vmStarted\n";
-                }*
+                    std::cerr << "Error statusStartvm: unable to open " << directory + "/vmStarted\n";
+                }
             }
         }
 
@@ -238,6 +223,8 @@ try {
                         std::cout << "Undefined" << std::endl;
                     } else {
                         std::cout << outbuffer << std::endl;
+                        ofS.close();
+                        clearFile(directory + "/vmStopped");
                     }
                 } else {
                     std::cerr << "Error statusStopvm: unable to open " << directory + "vmStopped\n";
@@ -261,9 +248,11 @@ try {
                         std::cout << "Undefined" << std::endl;
                     } else {
                         std::cout << outbuffer << std::endl;
+                        ofS.close();
+                        clearFile(directory + "/vmMigrated");
                     }
                 } else {
-                    std::cerr << "Error statusStopvm: unable to open " << directory + "vmMigrated\n";
+                    std::cerr << "Error statusMigratevm: unable to open " << directory + "/vmMigrated\n";
                 }
             }
 

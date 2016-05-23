@@ -22,6 +22,8 @@ vm:
   retry-counter: 456
   migration-type: "I don't care"
   rdma-migration: true
+  vendor: 0x15b3
+  device: 0x673c
 receive:
   path: /tmp
 agent:

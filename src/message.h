@@ -56,12 +56,13 @@ namespace fast {
     class startvm : public message {
     public:
 
-        startvm(name hostname,name UUID, std::vector < machineConf > & vm_conf, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        startvm(name hostname,name UUID, YAML::Node & vm_conf, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
         : message(std::string("fast/migfra/") + hostname + std::string("/task"), comm, "scheduler", STARTVM, Qos), UUID(UUID) ,vm_configurations(vm_conf), hostname(hostname) {
             this->send();
         }
         name UUID;
-        std::vector < machineConf > vm_configurations;
+
+        YAML::Node vm_configurations;
         name hostname;
 
         // Override these two methods to state which members should be serialized

@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 
 
 
-        fast::startvm("test","UUID1", confs, conf.comm, 2);
+        //fast::startvm("test","UUID1", confs, conf.comm, 2);
 
         fast::stopvm("test","UUID2",{"anthe1", "centos660"}, conf.comm, 2);
 

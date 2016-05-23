@@ -227,13 +227,36 @@ int main(int argc, char *argv[]) {
         if (vm.count("startvm")) {
             if (vm.count("Command Parameter")) {
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
-                std::vector<fast::machineConf> confs;
-                confs.push_back({
-                    {"name", arguments[1]},
-                    {"xml", arguments[2]},
-                    {"overlay-image", configPublic["vm"]["overlay-image"].as<std::string>() + arguments[1]},
-                    {"base-image", configPublic["vm"]["base-image"].as<std::string>()}
-                });
+                //std::vector<fast::machineConf> confs;
+                std::fstream inFile;
+                inFile.open(arguments[2]);//open the input file
+                std::stringstream strStream, pc_ids;
+                strStream << inFile.rdbuf();//read the file
+                std::string str = strStream.str();//str holds the content of the file
+                YAML::Node n1;
+                n1["name"] = arguments[1];
+                YAML::Node n2,list;
+                list["vendor"] = "0x15b3";
+                list["device"] = "0x673c";
+                n2["xml"] = str;
+                n2["pci-ids"] = list;
+                /*
+                confs.push_back({  // confs  is a vector of maps
+                    {"name", arguments[1]}
+                    //{"xml", str}// the xml should be loaded now from a file
+                   // {"overlay-image", configPublic["vm"]["overlay-image"].as<std::string>() + arguments[1]},
+                   // {base-image", configPublic["vm"]["base-image"].as<std::string>()}
+                });*/
+                //pci_ids << "- vendor: 0x15b3"<<std::endl;
+                //pci_ids << "- device: 0x673c"
+                YAML::Node confs;
+                confs.push_back(n1);
+                confs.push_back(n2);
+                /*
+                confs.push_back( {
+                    {"xml", str},// the xml should be loaded now from a file
+                    {"pci-ids", pci_ids}
+                });*/
 
                 fast::startvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), confs, conf.comm, 2);
                 sleep(1);

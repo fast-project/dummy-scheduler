@@ -1,1 +1,1 @@
-mosquitto_sub -t "fast/agent/#"
+mosquitto_sub -t "fast/agent/+"

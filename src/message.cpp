@@ -26,14 +26,16 @@ YAML::Node startvm::emit() const {
     node["task"] = "start vm";
     node["host"] = hostname;
     node["id"] = UUID;
+    /*
     for (auto &item : this->vm_configurations) {
         YAML::Node node2;
         for (auto &mp : item) {
             node2[mp.first] = mp.second;
         }
         node1.push_back(node2);
-    }
-    node["vm-configurations"] = node1;
+    }*/
+    //node["vm-configurations"] = node1;
+    node["vm-configurations"] = this->vm_configurations;
     return node;
 }
 

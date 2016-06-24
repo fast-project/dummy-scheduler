@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
             std::cout << desc << std::endl;
             return EXIT_SUCCESS;
         }
-        std::string config_file_name = "scheduler.conf";
+        std::string config_file_name = "/cluster/MQTT/dummy-scheduler/scheduler.conf";
         if (vm.count("config"))
             config_file_name = vm["config"].as<std::string>();
 

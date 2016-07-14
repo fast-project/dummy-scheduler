@@ -39,19 +39,21 @@ MESSAGE( STATUS "CMAKE_CXX_FLAGS:         " ${CMAKE_CXX_FLAGS} )
 # endif()
 
 # Find boost
-find_package(Boost COMPONENTS program_options filesystem regex REQUIRED)
+find_package(Boost  COMPONENTS program_options filesystem regex system REQUIRED)
 if(Boost_FOUND)
 	include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 	#
         list(APPEND LIBS "${Boost_FILESYSTEM_LIBRARIES}")
         list(APPEND LIBS "${Boost_LIBRARIES}")
 	list(APPEND LIBS_BENCHMARK "${Boost_LIBRARIES}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lboost_system")
         message(STATUS "${Boost_LIBRARIES}")
         
 else()
 	message(SEND_ERROR "Boost::program_options is required.")
 endif()
 
+SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lboost_system")
 # Cache
 #set(BUILD_SHARED_LIBS OFF CACHE BOOL "If ON build shared, else static libraries.")
 #if(BUILD_SHARED_LIBS)
@@ -224,7 +226,7 @@ target_link_libraries(dummy-scheduler ${LIBS})
 
 add_executable(fast-mqtt	${SRC_FAST_INTER})
 add_dependencies(fast-mqtt fastlib)
-target_link_libraries(fast-mqtt ${LIBS})
+target_link_libraries(fast-mqtt  ${Boost_SYSTEM_LIBRARY} ${LIBS} ${Boost_LIBRARIES})
  message(STATUS "fast-mqtt ${Boost_LIBRARIES}")
 
 

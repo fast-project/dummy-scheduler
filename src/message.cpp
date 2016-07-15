@@ -71,7 +71,7 @@ YAML::Node fast::migratevm::emit() const {
     node["task"] = "migrate vm";
     node["host"] = hostname;
     node["id"] = UUID;
-    node["name"] = this->vm_name;
+    node["vm-name"] = this->vm_name;
     node["destination"] = this->destination;
     node["time-measurement"] = "true";
     for(auto &item : this->par)

@@ -234,12 +234,13 @@ int main(int argc, char *argv[]) {
                 strStream << inFile.rdbuf();//read the file
                 std::string str = strStream.str();//str holds the content of the file
                 YAML::Node n1;
-                n1["name"] = arguments[1];
+                n1["vm-name"] = arguments[1];
                 YAML::Node n2,list;
                 list["vendor"] = "0x15b3";
                 list["device"] = "0x673c";
                 n2["xml"] = str;
-                n2["pci-ids"] = list;
+                /* not sending PCI-IDS for now*/
+                //n2["pci-ids"] = list;
                 /*
                 confs.push_back({  // confs  is a vector of maps
                     {"name", arguments[1]}

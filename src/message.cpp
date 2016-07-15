@@ -53,7 +53,10 @@ YAML::Node fast::stopvm::emit() const {
         node2["vm-name"] = item;
         node1.push_back(node2);
     }
-    node["list"] = node1;
+    /* changing list to vm-configurations, just to fix Simon error not complying to standard*/
+    
+    //node["list"] = node1;
+    node["vm-configurations"] = node1;
     //node["vm-configurations"] = node1;
     return node;
 }

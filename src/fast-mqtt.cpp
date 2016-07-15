@@ -286,8 +286,10 @@ int main(int argc, char *argv[]) {
             if (vm.count("Command Parameter")) {
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
                 fast::migratevm(arguments[1], configPublic["vm"]["UUID"].as<std::string>(), arguments[0], arguments[2],{
-                    {"retry-counter", configPublic["vm"]["retry-counter"].as<std::string>()},
-                    {"migration-type", configPublic["vm"]["migration-type"].as<std::string>()},
+                    /* Changing to comply with Simon */
+                    //{"retry-counter", configPublic["vm"]["retry-counter"].as<std::string>()},
+                    //{"migration-type", configPublic["vm"]["migration-type"].as<std::string>()},
+                    {"live-migration","true"},
                     {"rdma-migration", configPublic["vm"]["rdma-migration"].as<std::string>()}
                 }, conf.comm, 2);
                 sleep(1);

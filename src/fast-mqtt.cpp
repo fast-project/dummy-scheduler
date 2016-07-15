@@ -274,7 +274,7 @@ int main(int argc, char *argv[]) {
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
 
                 fast::stopvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), {
-                    arguments[0]
+                    arguments[1]
                 }, conf.comm, 2);
                 sleep(1);
             }

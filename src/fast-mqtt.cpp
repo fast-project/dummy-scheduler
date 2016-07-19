@@ -264,7 +264,7 @@ int main(int argc, char *argv[]) {
                 std::cout <<"Before sending"<<std::endl;
                 fast::startvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), confs, conf.comm, 2);
                 std::cout <<"After sending" << std::endl;
-                while(1){};
+                while(1){;};
                 conf.comm->disconnect_from_broker();
             }
         }

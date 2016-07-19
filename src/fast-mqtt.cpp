@@ -277,7 +277,7 @@ int main(int argc, char *argv[]) {
                     arguments[1]
                 }, conf.comm, 2);
                 sleep(1);
-                conf.comm->disconnect_from_broker();
+                //conf.comm->disconnect_from_broker();
             }
         }
 
@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
                     {"rdma-migration", configPublic["vm"]["rdma-migration"].as<std::string>()}
                 }, conf.comm, 2);
                 sleep(1);
-                conf.comm->disconnect_from_broker();
+                //conf.comm->disconnect_from_broker();
             }
         }
 

@@ -53,11 +53,7 @@ YAML::Node fast::stopvm::emit() const {
         node2["vm-name"] = item;
         node1.push_back(node2);
     }
-    /* changing list to vm-configurations, just to fix Simon error not complying to standard*/
-    
-    //node["list"] = node1;
-    node["vm-configurations"] = node1;
-    //node["vm-configurations"] = node1;
+    node["list"] = node1;
     return node;
 }
 
@@ -67,7 +63,7 @@ void stopvm::load(const YAML::Node &node) {
 
 
 YAML::Node fast::migratevm::emit() const {
-    YAML::Node node, node1;
+    YAML::Node node, node_params;;
     node["task"] = "migrate vm";
     node["host"] = hostname;
     node["id"] = UUID;
@@ -76,9 +72,9 @@ YAML::Node fast::migratevm::emit() const {
     node["time-measurement"] = "true";
     for(auto &item : this->par)
     {
-        node1[item.first]=item.second;
+        node_params[item.first]=item.second;
     }
-    node["parameter"] = node1;
+    node["parameter"] = node_params;
     return node;
 }
 

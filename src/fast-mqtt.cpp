@@ -261,7 +261,6 @@ int main(int argc, char *argv[]) {
                     {"xml", str},// the xml should be loaded now from a file
                     {"pci-ids", pci_ids}
                 });*/
-                sleep(1);
                 fast::startvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), confs, conf.comm, 2);
                 sleep(1);
                 //conf.comm->disconnect_from_broker();

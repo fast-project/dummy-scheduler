@@ -31,9 +31,6 @@ public:
      */
     void load(const YAML::Node &node) override;
 
-    ~pluginConfiguration() {
-        this->comm->disconnect_from_broker();
-    }
     std::shared_ptr<fast::MQTT_communicator> comm;
 private:
 

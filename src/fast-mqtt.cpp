@@ -263,6 +263,7 @@ int main(int argc, char *argv[]) {
                 });*/
 
                 fast::startvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), confs, conf.comm, 2);
+                conf.comm->disconnect_from_broker();
                 sleep(1);
             }
         }
@@ -286,7 +287,7 @@ int main(int argc, char *argv[]) {
             if (vm.count("Command Parameter")) {
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
                 fast::migratevm(arguments[1], configPublic["vm"]["UUID"].as<std::string>(), arguments[0], arguments[2],{
-                    /* Changing to comply with Simon */
+                    /* Changing to comply with simon */
                     //{"retry-counter", configPublic["vm"]["retry-counter"].as<std::string>()},
                     //{"migration-type", configPublic["vm"]["migration-type"].as<std::string>()},
                     {"live-migration","true"},
@@ -298,7 +299,9 @@ int main(int argc, char *argv[]) {
 
         if (vm.count("listen")) {
             recMessageHandler receive(true, conf.comm);
-            receive.addTopic("fast/migfra/+/status", 2);
+            /* Updating things to comply with simon*/
+            //receive.addTopic("fast/migfra/+/status", 2);
+            receive.addTopic("fast/migfra/+/result", 2);
             receive.addTopic("fast/agent/+/status", 2);
             receive.run();
         }

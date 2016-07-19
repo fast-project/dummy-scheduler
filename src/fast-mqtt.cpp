@@ -263,7 +263,6 @@ int main(int argc, char *argv[]) {
                 });*/
 
                 fast::startvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), confs, conf.comm, 2);
-                conf.comm->disconnect_from_broker();
                 sleep(1);
             }
         }

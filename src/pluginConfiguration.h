@@ -6,12 +6,11 @@
  */
 
 #ifndef PLUGINCONFIGURATION_H
-#define	PLUGINCONFIGURATION_H
+#define PLUGINCONFIGURATION_H
 
 #include <fast-lib/communicator.hpp>
 #include <fast-lib/mqtt_communicator.hpp>
 #include <fast-lib/serializable.hpp>
-
 
 class pluginConfiguration : fast::Serializable {
 public:
@@ -32,12 +31,13 @@ public:
      */
     void load(const YAML::Node &node) override;
 
-
-
+    ~pluginConfiguration() {
+        this->comm->disconnect_from_broker();
+    }
     std::shared_ptr<fast::MQTT_communicator> comm;
 private:
 
 };
 
-#endif	/* PLUGINCONFIGURATION_H */
+#endif /* PLUGINCONFIGURATION_H */
 

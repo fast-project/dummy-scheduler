@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
         desc.add_options()
                 ("help,h", "produce help message")
                 ("config,c", bo::value<std::string>(), "path to config file")
-                ("startvm", "startvm <hostname> <vmname> <XML configuration>")
+                ("startvm", "startvm <hostname> [<vmname>] [<XML configuration>]")
                 ("stopvm", "stopvm <hostname> <vmname>")
                 ("migratevm", "migratevm <vmname> <source hostname> <destination hostname>")
                 ("listen", "listen the scheduler MQTT related channel for the nodes defined in the node list")
@@ -247,8 +247,8 @@ int main(int argc, char *argv[]) {
 			n["xml"] = xml_str;
 			YAML::Node pci_id;
 			pci_id["vendor"] = "0x15b3";
-			pci_id["device"] = "0x1004";
-//			pci_id["device"] = "0x673c";
+//			pci_id["device"] = "0x1004";
+			pci_id["device"] = "0x673c";
 			std::vector<YAML::Node> pci_id_vec;
 			pci_id_vec.push_back(pci_id);
 			n["pci-ids"] = pci_id_vec;

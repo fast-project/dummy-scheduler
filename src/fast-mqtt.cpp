@@ -226,21 +226,34 @@ int main(int argc, char *argv[]) {
 
         if (vm.count("startvm")) {
             if (vm.count("Command Parameter")) {
+                YAML::Node confs;
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
                 //std::vector<fast::machineConf> confs;
+		// start using vm-name
+		std::string vm_name = arguments[1];
+		if (vm_name != "") {
+			YAML::Node n;
+			n["vm-name"] = vm_name;
+			confs.push_back(n);
+		}
+		// start using xml
                 std::fstream inFile;
                 inFile.open(arguments[2]);//open the input file
                 std::stringstream strStream, pc_ids;
                 strStream << inFile.rdbuf();//read the file
-                std::string str = strStream.str();//str holds the content of the file
-                YAML::Node n1;
-                n1["vm-name"] = arguments[1];
-                YAML::Node n2,list;
-                list["vendor"] = "0x15b3";
-                list["device"] = "0x673c";
-                n2["xml"] = str;
-                /* not sending PCI-IDS for now*/
-                //n2["pci-ids"] = list;
+                std::string xml_str = strStream.str();//str holds the content of the file
+		if (xml_str != "") {
+			YAML::Node n;
+			n["xml"] = xml_str;
+			YAML::Node pci_id;
+			pci_id["vendor"] = "0x15b3";
+			pci_id["device"] = "0x1004";
+//			pci_id["device"] = "0x673c";
+			std::vector<YAML::Node> pci_id_vec;
+			pci_id_vec.push_back(pci_id);
+			n["pci-ids"] = pci_id_vec;
+			confs.push_back(n);
+		}
                 /*
                 confs.push_back({  // confs  is a vector of maps
                     {"name", arguments[1]}
@@ -250,9 +263,6 @@ int main(int argc, char *argv[]) {
                 });*/
                 //pci_ids << "- vendor: 0x15b3"<<std::endl;
                 //pci_ids << "- device: 0x673c"
-                YAML::Node confs;
-                confs.push_back(n1);
-                confs.push_back(n2);
                 /*
                 confs.push_back( {
                     {"xml", str},// the xml should be loaded now from a file

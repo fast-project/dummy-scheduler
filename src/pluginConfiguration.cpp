@@ -14,7 +14,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
+#include <algorithm>
+std::string random_string( size_t length );
 pluginConfiguration::pluginConfiguration(const std::string &config_file) {
     // Convert config file to string
     std::ifstream file_stream(config_file);
@@ -44,7 +45,8 @@ void pluginConfiguration::load(const YAML::Node &node) {
                     || !comm_node["host"] || !comm_node["port"] || !comm_node["keepalive"])
                 throw std::invalid_argument("Defective configuration for mqtt communicator.");
             comm = std::make_shared<fast::MQTT_communicator>(
-                    comm_node["id"].as<std::string>(),
+                    //comm_node["id"].as<std::string>(),
+                    random_string(10),
                     comm_node["subscribe-topic"].as<std::string>(),
                     comm_node["publish-topic"].as<std::string>(),
                     comm_node["host"].as<std::string>(),
@@ -54,5 +56,21 @@ void pluginConfiguration::load(const YAML::Node &node) {
             throw std::invalid_argument("Unknown communcation type in configuration found");
         }
     }
+}
+
+std::string random_string( size_t length )
+{
+    auto randchar = []() -> char
+    {
+        const char charset[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+        const size_t max_index = (sizeof(charset) - 1);
+        return charset[ rand() % max_index ];
+    };
+    std::string str(length,0);
+    std::generate_n( str.begin(), length, randchar );
+    return str;
 }
 

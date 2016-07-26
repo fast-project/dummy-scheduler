@@ -24,7 +24,8 @@ else()
 	message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wall -Wextra -pthread -Wreorder -lboost_system")#-DBOOST_SYSTEM_NO_DEPRECATED")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wall -Wextra -pthread -Wreorder")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wall -Wextra -pthread -Wreorder -lboost_system")#-DBOOST_SYSTEM_NO_DEPRECATED")
 
 MESSAGE( STATUS "CMAKE_CXX_FLAGS:         " ${CMAKE_CXX_FLAGS} )
 ### Find libraries
@@ -39,28 +40,32 @@ MESSAGE( STATUS "CMAKE_CXX_FLAGS:         " ${CMAKE_CXX_FLAGS} )
 # endif()
 
 # Find boost
-find_package(Boost  COMPONENTS program_options filesystem regex system REQUIRED)
-if(Boost_FOUND)
-	include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-	#
-        list(APPEND LIBS "${Boost_FILESYSTEM_LIBRARIES}")
-        list(APPEND LIBS "${Boost_LIBRARIES}")
-	list(APPEND LIBS_BENCHMARK "${Boost_LIBRARIES}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lboost_system")
-        message(STATUS "${Boost_LIBRARIES}")
-        
-else()
-	message(SEND_ERROR "Boost::program_options is required.")
-endif()
+#find_package(Boost  COMPONENTS program_options filesystem regex system REQUIRED)
+#if(Boost_FOUND)
+#	include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+#	#
+#        list(APPEND LIBS "${Boost_FILESYSTEM_LIBRARIES}")
+#        list(APPEND LIBS "${Boost_LIBRARIES}")
+#	list(APPEND LIBS_BENCHMARK "${Boost_LIBRARIES}")
+#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lboost_system")
+#        message(STATUS "${Boost_LIBRARIES}")
+#        
+#else()
+#	message(SEND_ERROR "Boost::program_options is required.")
+#endif()
 
-SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lboost_system")
+#SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -lboost_system")
+include(add_boost)
+include_directories(SYSTEM ${BoostSourceDir})
+list(APPEND LIBS "${BoostProgramOptionsLibs}" "${BoostFilesystemLibs}" "${BoostRegexLibs}" "${BoostSystemLibs}")
+
 # Cache
 #set(BUILD_SHARED_LIBS OFF CACHE BOOL "If ON build shared, else static libraries.")
 #if(BUILD_SHARED_LIBS)
 #	message(FATAL_ERROR "BUILD_SHARED_LIBS=ON is not supported yet. Use static libs instead.")
 #endif()
 
-set(ENABLE_LOGGING ON CACHE BOOL "Enable logging with boost.log.")
+set(ENABLE_LOGGING ON CACHE BOOL "Enable logging.")
 if(ENABLE_LOGGING)
 	add_definitions(-DFASTLIB_ENABLE_LOGGING)
 endif()
@@ -109,7 +114,7 @@ ExternalProject_Add(
 	CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fpic -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 
 )
 ExternalProject_Get_Property(fastlib install_dir)
-include_directories(${install_dir}/include)
+include_directories(SYSTEM ${install_dir}/include)
 #list(APPEND LIBS ${install_dir}/lib/libfastlib_serialization.a)
 #list(APPEND LIBS_BENCHMARK ${install_dir}/lib/libfastlib_serialization.a)
 #list(APPEND LIBS ${install_dir}/lib/libfastlib_communication.a)
@@ -137,8 +142,8 @@ list(APPEND LIBS ${install_dir}/lib/libfastlib.a)
 #)
 
 
-include_directories("${install_dir}/src/fastlib-build/mosquitto-prefix/include")
-include_directories("${install_dir}/src/fastlib-build/yaml-cpp-prefix/include")
+include_directories(SYSTEM "${install_dir}/src/fastlib-build/mosquitto-prefix/include")
+include_directories(SYSTEM "${install_dir}/src/fastlib-build/yaml-cpp-prefix/include")
 #include_directories("${install_dir}/include")
 
 # mosquitto

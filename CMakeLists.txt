@@ -208,11 +208,11 @@ set(SRC_FAST_INTER 	${PROJECT_SOURCE_DIR}/src/fast-mqtt.cpp
 
 
 # Add migfra.conf as runtime configuration file.
-configure_file(
-	"${PROJECT_SOURCE_DIR}/scheduler.conf.in"
-	"${PROJECT_BINARY_DIR}/scheduler.conf"
-	@ONLY
-)
+#configure_file(
+#	"${PROJECT_SOURCE_DIR}/scheduler.conf.in"
+#	"${PROJECT_BINARY_DIR}/scheduler.conf"
+#	@ONLY
+#)
 
 configure_file(
 	"${PROJECT_SOURCE_DIR}/Doxyfile.in"

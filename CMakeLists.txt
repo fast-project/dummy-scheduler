@@ -108,7 +108,7 @@ endif()
 
 ExternalProject_Add(
 	fastlib
-	GIT_REPOSITORY git@github.com:fast-project/fast-lib.git
+	GIT_REPOSITORY https://github.com/fast-project/fast-lib.git
         #LOG_DOWNLOAD 1
         #DOWNLOAD_DIR fast-lib
 	CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fpic -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> 

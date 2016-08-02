@@ -47,17 +47,17 @@ int main(int argc, char *argv[]) {
         p.add("Command Parameter", -1);
         desc.add_options()
                 ("help,h", "produce help message")
-                ("config,c", bo::value<std::string>(), "path to config file")
-                ("startvm", "startvm <hostname> [<vmname>] [<XML configuration>]")
-                ("stopvm", "stopvm <hostname> <vmname>")
-                ("migratevm", "migratevm <vmname> <source hostname> <destination hostname>")
-                ("listen", "listen the scheduler MQTT related channel for the nodes defined in the node list")
-                ("stopAgent", "stopAgent <hostname> <jobID> <processID>")
-                ("initAgents", "initAgents <hostlist>")
+                ("config,c", bo::value<std::string>(), "path to config file, default path is /cluster/MQTT/dummy-scheduler/scheduler.conf")
+                ("startvm", "<hostname> <vmname> <XML configuration>")
+                ("stopvm", "<hostname> <vmname>")
+                ("migratevm", "<vmname> <source hostname> <destination hostname>")
+                ("listen", "the scheduler MQTT related channel for the nodes defined in the node list")
+                ("stopAgent", "<hostname> <jobID> <processID>")
+                ("initAgents", "<hostlist>")
                 ("statusAgents", " ")
-                ("statusStartvm", "statusStartvm <vmname>")
-                ("statusStopvm", "statusStopvm <vmname>")
-                ("statusMigratevm", "statusMigratevm <vmname>")
+                ("statusStartvm", "<vmname>")
+                ("statusStopvm", "<vmname>")
+                ("statusMigratevm", "<vmname>")
                 //("input-file",bo::value< std::vector<std::string> >(),"test")
                 ;
         bo::options_description hidden("Hidden options");
@@ -246,9 +246,11 @@ int main(int argc, char *argv[]) {
 			YAML::Node n;
 			n["xml"] = xml_str;
 			YAML::Node pci_id;
-			pci_id["vendor"] = "0x15b3";
+//			pci_id["vendor"] = "0x15b3";
+                        pci_id["vendor"] = configPublic["vm"]["vendor"].as<std::string>();
 //			pci_id["device"] = "0x1004";
-			pci_id["device"] = "0x673c";
+//			pci_id["device"] = "0x673c";
+                        pci_id["device"] = configPublic["vm"]["device"].as<std::string>();
 			std::vector<YAML::Node> pci_id_vec;
 			pci_id_vec.push_back(pci_id);
 			n["pci-ids"] = pci_id_vec;

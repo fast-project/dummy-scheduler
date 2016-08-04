@@ -31,6 +31,10 @@
 #include "recMessageHandler.h"
 #include "agents.h"
 #include "utilites.h"
+//#include <fast-lib/log.hpp>
+//FASTLIB_LOG_INIT(comm_log, "SHE")
+
+//FASTLIB_LOG_SET_LEVEL_GLOBAL(comm_log, trace);
 //Global Variable
 std::map<fast::hostname, fast::agentProperties> agentMap;
 YAML::Node configPublic;
@@ -49,7 +53,7 @@ int main(int argc, char *argv[]) {
                 ("help,h", "produce help message")
                 ("config,c", bo::value<std::string>(), "path to config file, default path is /cluster/MQTT/dummy-scheduler/scheduler.conf")
                 ("startvm", "<hostname> <vmname> <XML configuration>")
-                ("stopvm", "<hostname> <vmname>")
+                ("stopvm", "(<hostname> <vmname>)  or (<delay in seconds> <hostname> <vmname>)")
                 ("migratevm", "<vmname> <source hostname> <destination hostname>")
                 ("listen", "the scheduler MQTT related channel for the nodes defined in the node list")
                 ("stopAgent", "<hostname> <jobID> <processID>")
@@ -80,7 +84,7 @@ int main(int argc, char *argv[]) {
         if (vm.count("config"))
             config_file_name = vm["config"].as<std::string>();
 
-        
+
         configPublic = YAML::LoadFile(config_file_name);
         if (vm.count("statusStartvm")) {
             fast::name vmname;
@@ -229,33 +233,33 @@ int main(int argc, char *argv[]) {
                 YAML::Node confs;
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
                 //std::vector<fast::machineConf> confs;
-		// start using vm-name
-		std::string vm_name = arguments[1];
-		if (vm_name != "") {
-			YAML::Node n;
-			n["vm-name"] = vm_name;
-			confs.push_back(n);
-		}
-		// start using xml
+                // start using vm-name
+                std::string vm_name = arguments[1];
+                if (vm_name != "") {
+                    YAML::Node n;
+                    n["vm-name"] = vm_name;
+                    confs.push_back(n);
+                }
+                // start using xml
                 std::fstream inFile;
-                inFile.open(arguments[2]);//open the input file
+                inFile.open(arguments[2]); //open the input file
                 std::stringstream strStream, pc_ids;
-                strStream << inFile.rdbuf();//read the file
-                std::string xml_str = strStream.str();//str holds the content of the file
-		if (xml_str != "") {
-			YAML::Node n;
-			n["xml"] = xml_str;
-			YAML::Node pci_id;
-//			pci_id["vendor"] = "0x15b3";
-                        pci_id["vendor"] = configPublic["vm"]["vendor"].as<std::string>();
-//			pci_id["device"] = "0x1004";
-//			pci_id["device"] = "0x673c";
-                        pci_id["device"] = configPublic["vm"]["device"].as<std::string>();
-			std::vector<YAML::Node> pci_id_vec;
-			pci_id_vec.push_back(pci_id);
-			n["pci-ids"] = pci_id_vec;
-			confs.push_back(n);
-		}
+                strStream << inFile.rdbuf(); //read the file
+                std::string xml_str = strStream.str(); //str holds the content of the file
+                if (xml_str != "") {
+                    YAML::Node n;
+                    n["xml"] = xml_str;
+                    YAML::Node pci_id;
+                    //			pci_id["vendor"] = "0x15b3";
+                    pci_id["vendor"] = configPublic["vm"]["vendor"].as<std::string>();
+                    //			pci_id["device"] = "0x1004";
+                    //			pci_id["device"] = "0x673c";
+                    pci_id["device"] = configPublic["vm"]["device"].as<std::string>();
+                    std::vector<YAML::Node> pci_id_vec;
+                    pci_id_vec.push_back(pci_id);
+                    n["pci-ids"] = pci_id_vec;
+                    confs.push_back(n);
+                }
                 /*
                 confs.push_back({  // confs  is a vector of maps
                     {"name", arguments[1]}
@@ -281,11 +285,20 @@ int main(int argc, char *argv[]) {
         if (vm.count("stopvm")) {
             if (vm.count("Command Parameter")) {
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
+                if (arguments.size() == 2) {
 
-                fast::stopvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), {
-                    arguments[1]
-                }, conf.comm, 2);
-                sleep(1);
+                    fast::stopvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), {
+                        arguments[1]
+                    }, conf.comm, 2);
+                    sleep(1);
+                } else if (arguments.size() == 3)
+                {
+                    sleep(std::stoi (arguments[0]));
+                    fast::stopvm(arguments[1], configPublic["vm"]["UUID"].as<std::string>(), {
+                        arguments[2]
+                    }, conf.comm, 2);
+                    sleep(1);
+                }
                 //conf.comm->disconnect_from_broker();
             }
         }

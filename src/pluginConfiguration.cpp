@@ -46,7 +46,8 @@ void pluginConfiguration::load(const YAML::Node &node) {
                 throw std::invalid_argument("Defective configuration for mqtt communicator.");
             comm = std::make_shared<fast::MQTT_communicator>(
                     //comm_node["id"].as<std::string>(),
-                    random_string(10), // now the ID is generated as random string
+                    //random_string(10), // now the ID is generated as random string
+		    std::string{},//giving and empty string	
                     comm_node["subscribe-topic"].as<std::string>(),
                     comm_node["publish-topic"].as<std::string>(),
                     comm_node["host"].as<std::string>(),

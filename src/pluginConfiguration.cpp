@@ -15,6 +15,8 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <unistd.h>
+#include <sys/types.h>
 std::string random_string( size_t length );
 pluginConfiguration::pluginConfiguration(const std::string &config_file) {
     // Convert config file to string
@@ -44,10 +46,17 @@ void pluginConfiguration::load(const YAML::Node &node) {
             if (!comm_node["id"] || !comm_node["subscribe-topic"] || !comm_node["publish-topic"]
                     || !comm_node["host"] || !comm_node["port"] || !comm_node["keepalive"])
                 throw std::invalid_argument("Defective configuration for mqtt communicator.");
+            size_t len{100};
+            char    hostname[len];
+            std::stringstream Idstream;
+            gethostname(hostname, len);
+            Idstream<<"Current ID : fast-mqtt-"<<hostname<<"-"<< getpid()<<std::endl;
+            std::cout << Idstream.str();
             comm = std::make_shared<fast::MQTT_communicator>(
                     //comm_node["id"].as<std::string>(),
                     //random_string(10), // now the ID is generated as random string
-		    std::string{},//giving and empty string	
+		    //std::string{},//giving and empty string
+                    Idstream.str(), //now the is set to fast-mqtt-<hostname>-<pid>
                     comm_node["subscribe-topic"].as<std::string>(),
                     comm_node["publish-topic"].as<std::string>(),
                     comm_node["host"].as<std::string>(),

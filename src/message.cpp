@@ -24,8 +24,9 @@ void message::send() {
 YAML::Node startvm::emit() const {
     YAML::Node node, node1;
     node["task"] = "start vm";
-    node["host"] = hostname;
-    node["id"] = UUID;
+    /* Removing the Id and host field*/
+    //node["host"] = hostname;
+    //node["id"] = UUID;
     /*
     for (auto &item : this->vm_configurations) {
         YAML::Node node2;

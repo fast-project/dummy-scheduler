@@ -234,12 +234,13 @@ int main(int argc, char *argv[]) {
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
                 //std::vector<fast::machineConf> confs;
                 // start using vm-name
-                std::string vm_name = arguments[1];
-                if (vm_name != "") {
-                    YAML::Node n;
-                    n["vm-name"] = vm_name;
-                    confs.push_back(n);
-                }
+                /*now the VM-name is not sent at all*/
+                //std::string vm_name = arguments[1];
+                //if (vm_name != "") {
+                //    YAML::Node n;
+                //    n["vm-name"] = vm_name;
+                //    confs.push_back(n);
+                // }
                 // start using xml
                 std::fstream inFile;
                 inFile.open(arguments[2]); //open the input file

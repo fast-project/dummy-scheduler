@@ -259,6 +259,7 @@ int main(int argc, char *argv[]) {
                     std::vector<YAML::Node> pci_id_vec;
                     pci_id_vec.push_back(pci_id);
                     n["pci-ids"] = pci_id_vec;
+		    n["vm-name"] = arguments[1];
                     confs.push_back(n);
                 }
                 /*
@@ -325,6 +326,16 @@ int main(int argc, char *argv[]) {
             //receive.addTopic("fast/migfra/+/status", 2);
             receive.addTopic("fast/migfra/+/result", 2);
             receive.addTopic("fast/agent/+/status", 2);
+	    /* just add the following lines to solve subscri problm*/
+            receive.addTopic("fast/migfra/fast-01/result", 2);
+            receive.addTopic("fast/agent/fast-01/status", 2);
+            receive.addTopic("fast/migfra/fast-02/result", 2);
+            receive.addTopic("fast/agent/fast-02/status", 2);
+            receive.addTopic("fast/migfra/fast-03/result", 2);
+            receive.addTopic("fast/agent/fast-03/status", 2);
+            receive.addTopic("fast/migfra/fast-04/result", 2);
+            receive.addTopic("fast/agent/fast-04/status", 2);
+		
             receive.run();
         }
 

@@ -26,7 +26,7 @@ YAML::Node startvm::emit() const {
     node["task"] = "start vm";
     /* Removing the Id and host field*/
     //node["host"] = hostname;
-    //node["id"] = UUID;
+   // node["id"] = (this->vm_configurations)[0]["vm-name"].as<std::string>();
     /*
     for (auto &item : this->vm_configurations) {
         YAML::Node node2;

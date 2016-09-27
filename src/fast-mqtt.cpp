@@ -19,6 +19,7 @@
 #include <vector>
 #include <fstream>
 #include <istream>
+#include <ostream>
 
 #include <sys/types.h> 
 #include <sys/stat.h>
@@ -62,6 +63,7 @@ int main(int argc, char *argv[]) {
                 ("statusStartvm", "<vmname>")
                 ("statusStopvm", "<vmname>")
                 ("statusMigratevm", "<vmname>")
+                ("collectKPI", "<nodelist file> <periode>")
                 //("input-file",bo::value< std::vector<std::string> >(),"test")
                 ;
         bo::options_description hidden("Hidden options");
@@ -228,6 +230,61 @@ int main(int argc, char *argv[]) {
 
         pluginConfiguration conf(config_file_name);
 
+        if (vm.count("collectKPI")) {
+            int maxCores{32};
+            if (vm.count("Command Parameter")) {
+                std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
+                //arguments[0] ==> node list, arguments[1] ==> periode
+                std::cout << "Periode " << arguments[1] << " Seconds" << std::endl;
+                std::cout << "Reading host file  " << arguments[0] << std::endl;
+                std::ifstream nodelist{arguments[0]};
+                if (nodelist) {
+                    std::cout << "Found:" << std::endl;
+                    std::string item;
+                    std::vector<std::string> nodelistVector;
+                    while (nodelist >> item) {
+                        std::cout << "\t" << item << std::endl;
+                        nodelistVector.push_back(item);
+                    }
+                    std::vector<fast::name> corelist;
+                    for (int i = 0; i < maxCores; i++) {
+                        std::stringstream outstr;
+                        outstr << i;
+                        corelist.push_back(outstr.str());
+                    }
+                    if (nodelistVector.size() != 0) {
+                        while (1) {
+                            for (auto &node : nodelistVector) {
+                                fast::requestKPI(node, corelist, conf.comm, 2);
+                            }
+                            std::string delay = arguments[1];
+                            sleep(std::atoi(delay.c_str()));
+                        }
+                    }
+                } else {
+
+                    std::cerr << "error with file " << arguments[0] << std::endl;
+                    return 0;
+                }
+
+                /*s
+                if (arguments.size() == 2) {
+
+                    fast::stopvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), {
+                        arguments[1]
+                    }, conf.comm, 2);
+                    sleep(1);
+                } else if (arguments.size() == 3)
+                {
+                    sleep(std::stoi (arguments[0]));
+                    fast::stopvm(arguments[1], configPublic["vm"]["UUID"].as<std::string>(), {
+                        arguments[2]
+                    }, conf.comm, 2);
+                    sleep(1);
+                }*/
+                //conf.comm->disconnect_from_broker();
+            }
+        }
         if (vm.count("startvm")) {
             if (vm.count("Command Parameter")) {
                 YAML::Node confs;
@@ -259,7 +316,7 @@ int main(int argc, char *argv[]) {
                     std::vector<YAML::Node> pci_id_vec;
                     pci_id_vec.push_back(pci_id);
                     n["pci-ids"] = pci_id_vec;
-		    n["vm-name"] = arguments[1];
+                    n["vm-name"] = arguments[1];
                     confs.push_back(n);
                 }
                 /*
@@ -293,9 +350,9 @@ int main(int argc, char *argv[]) {
                         arguments[1]
                     }, conf.comm, 2);
                     sleep(1);
-                } else if (arguments.size() == 3)
-                {
-                    sleep(std::stoi (arguments[0]));
+                } else if (arguments.size() == 3) {
+                    sleep(std::stoi(arguments[0]));
+
                     fast::stopvm(arguments[1], configPublic["vm"]["UUID"].as<std::string>(), {
                         arguments[2]
                     }, conf.comm, 2);
@@ -326,7 +383,7 @@ int main(int argc, char *argv[]) {
             //receive.addTopic("fast/migfra/+/status", 2);
             receive.addTopic("fast/migfra/+/result", 2);
             receive.addTopic("fast/agent/+/status", 2);
-	    /* just add the following lines to solve subscri problm*/
+            /* just add the following lines to solve subscri problm*/
             receive.addTopic("fast/migfra/fast-01/result", 2);
             receive.addTopic("fast/agent/fast-01/status", 2);
             receive.addTopic("fast/migfra/fast-02/result", 2);
@@ -335,7 +392,7 @@ int main(int argc, char *argv[]) {
             receive.addTopic("fast/agent/fast-03/status", 2);
             receive.addTopic("fast/migfra/fast-04/result", 2);
             receive.addTopic("fast/agent/fast-04/status", 2);
-		
+
             receive.run();
         }
 

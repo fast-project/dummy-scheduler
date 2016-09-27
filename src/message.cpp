@@ -111,4 +111,21 @@ void fast::stopMonitor::load(const YAML::Node& node) {
 }
 
 
+YAML::Node fast::requestKPI::emit() const {
+    YAML::Node node;
+    node["task"]  = "mmbwmon request";
+    YAML::Node list;
+    int i =0;
+    for(auto &item : this->corelist)
+    {
+        list[i] = item;
+        i++;
+    }
+    node["cores"] = list;
+    return node;
+}
 
+
+void fast::requestKPI::load(const YAML::Node& node) {
+    throw std::runtime_error("stopMonitor::load "+ node.as<name>()+ " not supported\n");
+}

@@ -17,8 +17,7 @@
 namespace fast {
 
     enum messageType {
-        STARTVM, STOPVM, MIGRATEVM, INITAGENT, STOPMONITOR
-    };
+        STARTVM, STOPVM, MIGRATEVM, INITAGENT, STOPMONITOR, REQUESTKPI };
     typedef std::string name;
     typedef std::string hostname;
     typedef std::vector<name> machines;
@@ -144,6 +143,21 @@ namespace fast {
         void load(const YAML::Node &node) override;
     };
 
+    class requestKPI: public message {
+    public:
+        fast::name host;
+        std::vector<fast::name> corelist;
+        requestKPI(name host, std::vector<name> corelist, std::shared_ptr<fast::MQTT_communicator> comm, int Qos) :   
+        message( std::string("fast/agent/") + host +std::string("/mmbwmon/request"),
+        comm,"scheduler",REQUESTKPI,Qos),
+        host(host),
+         corelist(corelist){
+            this->send();
+        };
+        // Override these two methods to state which members should be serialized
+        YAML::Node emit() const override;
+        void load(const YAML::Node &node) override;
+    };
 
 }
 #endif /* MESSAGE_H */

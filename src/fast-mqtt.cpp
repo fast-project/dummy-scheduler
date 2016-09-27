@@ -381,9 +381,13 @@ int main(int argc, char *argv[]) {
             recMessageHandler receive(true, conf.comm);
             /* Updating things to comply with simon*/
             //receive.addTopic("fast/migfra/+/status", 2);
+            
+            /* unused for now
             receive.addTopic("fast/migfra/+/result", 2);
             receive.addTopic("fast/agent/+/status", 2);
-            /* just add the following lines to solve subscri problm*/
+             * /
+            // just add the following lines to solve subscri problm*/
+            /* unused for now
             receive.addTopic("fast/migfra/fast-01/result", 2);
             receive.addTopic("fast/agent/fast-01/status", 2);
             receive.addTopic("fast/migfra/fast-02/result", 2);
@@ -392,6 +396,8 @@ int main(int argc, char *argv[]) {
             receive.addTopic("fast/agent/fast-03/status", 2);
             receive.addTopic("fast/migfra/fast-04/result", 2);
             receive.addTopic("fast/agent/fast-04/status", 2);
+            */
+            receive.addTopic("fast/agent/+/mmbwmon/response",2);
 
             receive.run();
         }

@@ -25,8 +25,27 @@ void recMessageHandler::run() {
                 recTaskParser taskParser;
                 taskParser.comm = this->comm;
                 //std::cout << "For this topic " << item << std::endl;
-                std::string s = this->comm->get_message(item, std::chrono::seconds(1));//item,
-                std::cout << "message received" << std::endl;
+                //std::string s = this->comm->get_message(item, std::chrono::seconds(1));//item,
+                std::string actualTopic;
+                std::string s = this->comm->get_message(item,std::chrono::seconds(1), &actualTopic);
+                //std::cout << "message received" << std::endl;
+                for( char &c : actualTopic){
+                    if(c =='/') c =' ';
+                }
+                //std::stringstream ss{actualTopic};
+                //std::vector<std::string> receivedTopic;
+                //for(std::string t; ss>>t;)
+                //{
+                //    receivedTopic.push_back(t);
+                //}
+                //for(auto i : receivedTopic){
+                //    std::cout << i<<" $$$ ";
+                //}
+                //std::cout <<std::endl;
+                //t.
+                //std::cout << "message received from Topic "<< actualTopic << std::endl;
+                //std::cout << "message: "<< std::endl<<s<<std::endl;
+                taskParser.setReceiveTopic(actualTopic);
                 taskParser.from_string(s);
                 taskParser.execute();
             } catch (const std::runtime_error &e) {

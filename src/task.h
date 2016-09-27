@@ -82,6 +82,7 @@
     :   public task {
     public:
         agentKPI(){};
+        agentKPI(fast::name host):hostname(host){};
         void execute() override;
         YAML::Node emit() const override;
         void load(const YAML::Node &node) override;

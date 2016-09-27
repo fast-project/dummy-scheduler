@@ -192,8 +192,8 @@ void initAgent::load(const YAML::Node& node) {
 }
 
 void agentKPI::load(const YAML::Node& node) {
-    this->hostname = node["source"].as<std::string>();
-    this->KPIs = node["KPIS"].as<std::string>();
+    //this->hostname = node["source"].as<std::string>();
+    this->KPIs = node["result"].as<std::string>();
 }
 
 YAML::Node agentKPI::emit() const {
@@ -202,7 +202,7 @@ YAML::Node agentKPI::emit() const {
 }
 
 void agentKPI::execute() {
-    std::cout << " KPI received for host " + this->hostname + " KPIs: " + this->KPIs +"\n";
+    std::cout << " KPI received for host " + this->hostname + " result: " + this->KPIs +"\n";
     std::ofstream outputfile;
     std::string directory = configPublic["receive"]["path"].as<std::string>()
             + "/KPIs/";

@@ -55,7 +55,8 @@ int main(int argc, char *argv[]) {
                 ("config,c", bo::value<std::string>(), "path to config file, default path is /cluster/MQTT/dummy-scheduler/scheduler.conf")
                 ("startvm", "<hostname> <vmname> <XML configuration>")
                 ("stopvm", "(<hostname> <vmname>)  or (<delay in seconds> <hostname> <vmname>)")
-                ("migratevm", "<vmname> <source hostname> <destination hostname>")
+                ("migratevm", "<vmname> <source hostname> <destination hostname> <cpu-map>")
+                ("repinvm", "<hostname> <vmname> <cpu-map>")
                 ("listen", "the scheduler MQTT related channel for the nodes defined in the node list")
                 ("stopAgent", "<hostname> <jobID> <processID>")
                 ("initAgents", "<hostlist>")
@@ -231,7 +232,7 @@ int main(int argc, char *argv[]) {
         pluginConfiguration conf(config_file_name);
 
         if (vm.count("collectKPI")) {
-            int maxCores{32};
+            int maxCores{16};
             if (vm.count("Command Parameter")) {
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
                 //arguments[0] ==> node list, arguments[1] ==> periode
@@ -247,7 +248,12 @@ int main(int argc, char *argv[]) {
                         nodelistVector.push_back(item);
                     }
                     std::vector<fast::name> corelist;
-                    for (int i = 0; i < maxCores; i++) {
+                    for (int i = 8; i <= 15; i++) {
+                        std::stringstream outstr;
+                        outstr << i;
+                        corelist.push_back(outstr.str());
+                    }
+                    for (int i = 24; i <= 31; i++) {
                         std::stringstream outstr;
                         outstr << i;
                         corelist.push_back(outstr.str());
@@ -363,11 +369,23 @@ int main(int argc, char *argv[]) {
         }
 
 
+        if (vm.count("repinvm")) {
+            if (vm.count("Command Parameter")) {
+                std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
+                    fast::repinvm(arguments[0], configPublic["vm"]["UUID"].as<std::string>(), arguments[1], {
+                        arguments[2]
+                    }, conf.comm, 2);
+                    sleep(1);
+
+                //conf.comm->disconnect_from_broker();
+            }
+        }
+
 
         if (vm.count("migratevm")) {
             if (vm.count("Command Parameter")) {
                 std::vector<std::string> arguments = vm["Command Parameter"].as<std::vector < std::string >> ();
-                fast::migratevm(arguments[1], configPublic["vm"]["UUID"].as<std::string>(), arguments[0], arguments[2],{
+                fast::migratevm(arguments[1], configPublic["vm"]["UUID"].as<std::string>(), arguments[0], arguments[2], arguments[3],{
                     {"retry-counter", configPublic["vm"]["retry-counter"].as<std::string>()},
                     {"migration-type", configPublic["vm"]["migration-type"].as<std::string>()},
                     {"rdma-migration", configPublic["vm"]["rdma-migration"].as<std::string>()}
@@ -381,7 +399,7 @@ int main(int argc, char *argv[]) {
             recMessageHandler receive(true, conf.comm);
             /* Updating things to comply with simon*/
             //receive.addTopic("fast/migfra/+/status", 2);
-            
+
             /* unused for now
             receive.addTopic("fast/migfra/+/result", 2);
             receive.addTopic("fast/agent/+/status", 2);

@@ -17,7 +17,7 @@
 namespace fast {
 
     enum messageType {
-        STARTVM, STOPVM, MIGRATEVM, INITAGENT, STOPMONITOR, REQUESTKPI };
+        STARTVM, STOPVM, MIGRATEVM, INITAGENT, STOPMONITOR, REQUESTKPI, REPINVM };
     typedef std::string name;
     typedef std::string hostname;
     typedef std::vector<name> machines;
@@ -87,12 +87,30 @@ namespace fast {
         void load(const YAML::Node &node) override;
     };
 
+    class repinvm : public message {
+    public:
+	name hostname;
+        name vm_name;
+        name UUID;
+	name cpu_map;
+        repinvm(name host, name UUID , name vm_name, name cpu_map, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        : message(std::string("fast/migfra/") + host + std::string("/task")
+        , comm, "scheduler", REPINVM, Qos), hostname(host), vm_name(vm_name), UUID(UUID),  cpu_map(cpu_map)
+         {
+            this->send();
+        }
+
+        // Override these two methods to state which members should be serialized
+        YAML::Node emit() const override;
+        void load(const YAML::Node &node) override;
+    };
+
     class migratevm : public message {
     public:
 
-        migratevm(name host, name UUID, name vm_name, name destination, parameter par, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
+        migratevm(name host, name UUID, name vm_name, name destination, name cpu_map, parameter par, std::shared_ptr<fast::MQTT_communicator> comm, int Qos)
         : message(std::string("fast/migfra/") + host + std::string("/task"), comm, "scheduler", MIGRATEVM, Qos),
-        hostname(host), vm_name(vm_name), destination(destination), par(par), UUID(UUID) {
+        hostname(host), vm_name(vm_name), destination(destination), par(par), UUID(UUID), cpu_map(cpu_map) {
             this->send();
         }
         name hostname;
@@ -100,6 +118,7 @@ namespace fast {
         name destination;
         parameter par;
         name UUID;
+	name cpu_map;
         // Override these two methods to state which members should be serialized
         YAML::Node emit() const override;
         void load(const YAML::Node &node) override;

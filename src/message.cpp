@@ -48,7 +48,7 @@ YAML::Node fast::stopvm::emit() const {
     YAML::Node node, node1;
     node["task"] = "stop vm";
     node["host"] = hostname;
-    node["id"] = UUID;    
+    node["id"] = UUID;
     for (auto &item : this->vmMachines) {
         YAML::Node node2;
         node2["vm-name"] = item;
@@ -60,6 +60,19 @@ YAML::Node fast::stopvm::emit() const {
 
 void stopvm::load(const YAML::Node &node) {
     throw std::runtime_error("stopvm::load "+ node.as<name>()+ " not supported\n");
+}
+
+YAML::Node fast::repinvm::emit() const {
+    YAML::Node node;
+    node["task"] = "repin vm";
+    node["id"] = UUID;
+    node["vm-name"] = vm_name;
+    node["vcpu-map"] = cpu_map;
+    return node;
+}
+
+void repinvm::load(const YAML::Node &node) {
+    throw std::runtime_error("repinvm::load "+ node.as<name>()+ " not supported\n");
 }
 
 
@@ -75,6 +88,7 @@ YAML::Node fast::migratevm::emit() const {
     {
         node_params[item.first]=item.second;
     }
+    node_params["vcpu-map"]=cpu_map;
     node["parameter"] = node_params;
     return node;
 }

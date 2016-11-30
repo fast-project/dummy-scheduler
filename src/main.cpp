@@ -69,9 +69,9 @@ int main(int argc, char *argv[]) {
 
         fast::stopvm("test","UUID2",{"anthe1", "centos660"}, conf.comm, 2);
 
-        fast::migratevm("test", "UUID3", "anthe1", "node45",{
-            {"live-migration", "false"}
-        }, conf.comm, 2);
+//        fast::migratevm("test", "UUID3", "anthe1", "node45",{
+//            {"live-migration", "false"}
+//        }, conf.comm, 2);
 
         //fast::startvm("test", confs, conf.comm, 2);
 
